@@ -11,8 +11,17 @@ sueloimg = []
 # cargar img obtaculo
 obsimg = []
 
-fantasmimg = []
+#cargar img fantasma
+fantasimg = []
+fantasimg= pygame.image.load("fantasma.png")
+fantasimg = pygame.transform.scale(fantasimg, (50,50))
+fantasrect=fantasimg.get_rect()
 
+#tamaños
+width=800
+height=600
+x=0
+y=50
 
 
 # menu de inicio
@@ -117,22 +126,14 @@ def tablero(screen, ancho, alto):
             obsimg.append(pygame.image.load("obstaculo.png"))
             screen.blit(obsimg[z], (posicionX, posicionY))
     personaje(screen, matrizObstaculos)
+    fantasmas(screen, matrizObstaculos)
 
 #para agregar fantasmas
-    fantasimg = imagen("fantasma.png", True)
-    fantasimg = pygame.transform.scale(fantasimg, (50,50))
-    screen.blit(fantasimg, (0,0))
+def fantasmas(screen,matriz):
+    screen.blit(fantasimg, (x,y))
+    print(matriz)
 
-#para agregar imagenes
-def imagen (filename, transparente = False) :
-        try : image = pygame.image.load(filename)
-        except pygame.error as message:
-            raise SystemExit(message)
-        image = image.convert()
-        if transparente:
-                color = image.get_at(( 0, 0))
-                image.set_colorkey( color)
-        return image
+
 
 
 def personaje(screen, matrizObstaculos):
