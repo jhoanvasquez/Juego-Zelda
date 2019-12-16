@@ -76,7 +76,7 @@ def main():
             #screen.blit(background, o.pos, o.pos)
 
         pg.display.update()
-        pg.time.delay(10)
+        pg.time.delay(40)
         screen.fill(black)
 
 

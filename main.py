@@ -4,6 +4,8 @@ import numpy
 import math
 from tkinter import *
 import tkinter as tk
+import pyautogui
+
 
 # cargar img del suelo
 sueloimg = []
@@ -47,7 +49,7 @@ def menu():
 
     # combo
     variable = StringVar(raiz)
-    variable.set("800 x 600")
+    variable.set("600 x 400")
     combo = OptionMenu(raiz, variable, "800 x 600", "600 x 400", "400 x 200")
     combo.place(x=240, y=45)
 
@@ -89,20 +91,61 @@ def main(dimension):
         alto = 200
 
     pygame.init()
+
+    #Personaje Link
+    link = pygame.image.load("link1.png")
+    link_x = 0
+    link_y = 0
+
+    #Icono y titulo ventana
     pygame.display.set_caption("Zelda")
     icon = pygame.image.load("icon.png")
     pygame.display.set_icon(icon)
+
     screen = pygame.display.set_mode((ancho, alto))
+
+
     running = True
     crearTablero = False
     while running:
+        #Evento para cierre de ventana
         for evento in pygame.event.get():
             if evento.type == pygame.QUIT:
                 running = False
+
+        #Evento de movimiento de link + limites de mapa
+            if evento.type == pygame.KEYDOWN:
+                if evento.key == pygame.K_LEFT:
+                    if link_x >= 50:
+                        link_x -= 50
+                        screen.blit(screenshot, (0, 0))
+                        screen.blit(link, (link_x, link_y))
+                if evento.key == pygame.K_RIGHT:
+                    if link_x <= ancho-100:
+                        link_x += 50
+                        screen.blit(screenshot, (0, 0))
+                        screen.blit(link, (link_x, link_y))
+                if evento.key == pygame.K_UP:
+                    if link_y >= 50:
+                        link_y -= 50
+                        screen.blit(screenshot, (0, 0))
+                        screen.blit(link, (link_x, link_y))
+                if evento.key == pygame.K_DOWN:
+                    if link_y <= alto-100:
+                        link_y += 50
+                        screen.blit(screenshot, (0, 0))
+                        screen.blit(link, (link_x, link_y))
+
+        #Crear mapa
         if crearTablero == False:
-            tablero(screen, ancho, alto)
-            pygame.display.update()
+            matrizTablero = tablero(screen, ancho, alto)
+            screenshot = screen.copy()
+            screen.blit(screenshot, (0, 0))
+            screen.blit(link, (link_x, 0))
+        pygame.display.update()
+        pygame.time.delay(40)
         crearTablero = True
+
 
 
 # tablero del juego
@@ -125,22 +168,13 @@ def tablero(screen, ancho, alto):
                 matrizObstaculos[math.floor(posicionY * 2 / 100)][math.floor(posicionX * 2 / 100)] = 1
             obsimg.append(pygame.image.load("obstaculo.png"))
             screen.blit(obsimg[z], (posicionX, posicionY))
-    personaje(screen, matrizObstaculos)
-    fantasmas(screen, matrizObstaculos)
+    return matrizObstaculos
+
 
 #para agregar fantasmas
 def fantasmas(screen,matriz):
     screen.blit(fantasimg, (x,y))
     print(matriz)
-
-
-
-
-def personaje(screen, matrizObstaculos):
-    link = pygame.image.load("link.png")
-    if matrizObstaculos[0][0] != 1 and matrizObstaculos[0][1] != 1:
-        matrizObstaculos[0][0] = 2
-        screen.blit(link, (0, 0))
 
 
 if __name__ == '__main__':
