@@ -1,7 +1,4 @@
-import os
 import pygame as pg
-
-main_dir = os.path.split(os.path.abspath(__file__))[0]
 
 black = 32, 32, 32
 
@@ -12,25 +9,29 @@ class GameObject:
         self.pos = image.get_rect().move(0, height)
 
     def move(self):
-        self.pos = self.pos.move(self.speed, -2)
+        self.pos = self.pos.move(self.speed, -1)
 
         #lados
-        if self.pos.right > 600:
-            self.pos.left = 0
+        if self.pos.right > 640:
+            #self.pos.left = 0
+            self.speed=-1
             #self.pos.right = 0
             #self.speed = -1 * self.speed
         if self.pos.left < 0:
-            self.pos.right = 590
-            #self.speed = 10
+            #self.pos.right = 590
+            self.speed=1
 
         #up/down
-        if self.pos.top > 410:
+        if self.pos.top > 480:
             #self.speed = 1
             self.pos.top=0
+            #self.pos=self.pos.move(-self.speed,1)
+
+
             #self.speed = 10
         if self.pos.top < 0:
-            self.speed = self.speed*-1
-            self.pos.top = 409
+            self.speed = 1
+            self.pos.top = 479
             #self.speed = 10
 
 
@@ -63,21 +64,23 @@ def main():
         for event in pg.event.get():
             if event.type in (pg.QUIT, pg.KEYDOWN):
                 return
-        screen.blit(background, o.pos, o.pos)
-        pg.display.update()
 
-        #for o in objects:
-        #    screen.blit(background, o.pos, o.pos)
+        for o in objects:
+            screen.blit(background, o.pos, o.pos)
+            pg.display.update()
         for o in objects:
 
             o.move()
-            screen.blit(background, o.pos, o.pos)
+            #screen.blit(background, o.pos, o.pos)
             screen.blit(o.image, o.pos)
+            pg.display.update()
             #screen.blit(background, o.pos, o.pos)
 
         pg.display.update()
         pg.time.delay(40)
         screen.fill(black)
+        #screen.blit(background, o.pos, o.pos)
+        screen.blit(background, (0, 0))
 
 
 
