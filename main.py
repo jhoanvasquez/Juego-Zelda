@@ -187,12 +187,12 @@ def tablero (screen, ancho, alto):
     return matrizObstaculos
 
 
-def asterisco(matriz, link_x, link_y, llave_x):
+def asterisco(matriz, link_x, link_y, meta_x, meta_y):
      eureka = False
 
      while(eureka==False):
          pass
-
+ 
 
 #para agregar fantasmas
 def fantasmas(screen,matriz):
