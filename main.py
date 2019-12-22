@@ -92,10 +92,16 @@ def main(dimension):
 
     pygame.init()
 
-    #Personaje Link
+    #Personaje Link y llave
     link = pygame.image.load("link1.png")
     link_x = 0
     link_y = 0
+    i=0
+
+    #LLave
+    llave = pygame.image.load("key.png")
+    llave_x = (random.randint(0, 3)*50) + 5
+    llave_y = (random.randint(0, 3)*50) + 5
 
     #Icono y titulo ventana
     pygame.display.set_caption("Zelda")
@@ -104,52 +110,62 @@ def main(dimension):
 
     screen = pygame.display.set_mode((ancho, alto))
 
-
+    #Loop principal
     running = True
     crearTablero = False
     while running:
+
+        #Crear mapa
+        if crearTablero == False:
+            movements = ["b", "b", "b", "r", "r", "r", "l", "t", "t", "b"]
+            matrizTablero = tablero(screen, ancho, alto)
+            screen.blit(llave, (llave_x, llave_y))
+            screenshot = screen.copy()
+            screen.blit(screenshot, (0, 0))
+            screen.blit(link, (link_x, 0))
+
+
         #Evento para cierre de ventana
         for evento in pygame.event.get():
             if evento.type == pygame.QUIT:
                 running = False
 
-        #Evento de movimiento de link + limites de mapa
-            if evento.type == pygame.KEYDOWN:
-                if evento.key == pygame.K_LEFT:
-                    if link_x >= 50:
-                        link_x -= 50
-                        screen.blit(screenshot, (0, 0))
-                        screen.blit(link, (link_x, link_y))
-                if evento.key == pygame.K_RIGHT:
-                    if link_x <= ancho-100:
-                        link_x += 50
-                        screen.blit(screenshot, (0, 0))
-                        screen.blit(link, (link_x, link_y))
-                if evento.key == pygame.K_UP:
-                    if link_y >= 50:
-                        link_y -= 50
-                        screen.blit(screenshot, (0, 0))
-                        screen.blit(link, (link_x, link_y))
-                if evento.key == pygame.K_DOWN:
-                    if link_y <= alto-100:
-                        link_y += 50
-                        screen.blit(screenshot, (0, 0))
-                        screen.blit(link, (link_x, link_y))
 
-        #Crear mapa
-        if crearTablero == False:
-            matrizTablero = tablero(screen, ancho, alto)
-            screenshot = screen.copy()
-            screen.blit(screenshot, (0, 0))
-            screen.blit(link, (link_x, 0))
+        #Movimientos de link
+        if i < movements.__len__() and crearTablero==True:
+
+            if movements[i] == "l":
+                if link_x >= 50:
+                    link_x -= 50
+                    screen.blit(screenshot, (0, 0))
+                    screen.blit(link, (link_x, link_y))
+
+            if movements[i] == "r":
+                if link_x <= ancho-100:
+                    link_x += 50
+                    screen.blit(screenshot, (0, 0))
+                    screen.blit(link, (link_x, link_y))
+
+            if movements[i] == "t":
+                if link_y >= 50:
+                    link_y -= 50
+                    screen.blit(screenshot, (0, 0))
+                    screen.blit(link, (link_x, link_y))
+
+            if movements[i] == "b":
+                if link_y <= alto-100:
+                    link_y += 50
+                    screen.blit(screenshot, (0, 0))
+                    screen.blit(link, (link_x, link_y))
+            i+=1
+
         pygame.display.update()
-        pygame.time.delay(40)
+        pygame.time.delay(500)
         crearTablero = True
 
 
-
 # tablero del juego
-def tablero(screen, ancho, alto):
+def tablero (screen, ancho, alto):
     # ciclo para suelo
     for j in range(0, (math.ceil(alto / 100)) * 2):
         for i in range(0, (math.ceil(ancho / 100)) * 2):
@@ -171,6 +187,13 @@ def tablero(screen, ancho, alto):
     return matrizObstaculos
 
 
+def asterisco(matriz, link_x, link_y, llave_x):
+     eureka = False
+
+     while(eureka==False):
+         pass
+
+
 #para agregar fantasmas
 def fantasmas(screen,matriz):
     screen.blit(fantasimg, (x,y))
@@ -178,5 +201,5 @@ def fantasmas(screen,matriz):
 
 
 if __name__ == '__main__':
-    menu()
-
+    #menu()
+    main("600 x 400")
