@@ -123,6 +123,8 @@ def main(dimension):
             screenshot = screen.copy()
             screen.blit(screenshot, (0, 0))
             screen.blit(link, (link_x, 0))
+            print(matrizTablero)
+
 
 
         #Evento para cierre de ventana
@@ -202,4 +204,4 @@ def fantasmas(screen,matriz):
 
 if __name__ == '__main__':
     #menu()
-    main("600 x 400")
+    main("800 x 600")

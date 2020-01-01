@@ -12,14 +12,19 @@ fantasmasimg = []
 fantasmasimgrect = []
 fantasmasimgx=[]
 fantasmasimgy=[]
+cantidadfantasmas=10
 
+#lugarllave
+filallave=(alto // 50)-1
+columnallave=(ancho // 50)-1
+
+#lugarpuerta
+filapuerta=(alto // 50) - 1
+columnapuerta=0
 
 player = pg.image.load("fantasma.png")
 player = pg.transform.scale(player, (50, 50))
 
-
-player2 = pg.image.load("fantasma.png")
-player2 = pg.transform.scale(player, (50, 50))
 
 def main():
 
@@ -38,21 +43,20 @@ def main():
                 a[i][j]=1
 
     # agregar 0s a arrays de posiciones de fantasmas
-    fantasmasimgx = numpy.zeros((3), dtype=int)
-    fantasmasimgy = numpy.zeros((3), dtype=int)
+    fantasmasimgx = numpy.zeros((cantidadfantasmas), dtype=int)
+    fantasmasimgy = numpy.zeros((cantidadfantasmas), dtype=int)
 
 
+    #llave
+    a[ (alto // 50)-1 ][ (ancho // 50)-1]=4
+    #puerta
+    a[(alto // 50) - 1][0] = 5
 
 
     #screen.blit(player, (5, 5))
     playerrect = player.get_rect()
     playerrect.left=50
     playerrect.top=0
-
-
-    player2rect = player2.get_rect()
-    player2rect.left=0
-    player2rect.top=alto-50
 
 
     #cargar obstaculos de prueba
@@ -77,35 +81,19 @@ def main():
         x2= x2+ 50
         y2= y2+ 50
 
-# Crear y mostrar valores x y y de fantasmas creados desde 0
-    #for f in range(0, 3):
-     #   (fantasmasimgx[f], fantasmasimgy[f]) = buscar(a)
-    #print(fantasmasimgx, " ---- ", fantasmasimgy)
 
     #crear fantasmas
-    x3=100
-    y3=50
-    for f in range(0,3):
+    for f in range(0,cantidadfantasmas):
         newfantas=pg.image.load("fantasma.png")
         newfantas = pg.transform.scale(player, (50, 50))
         fantasmasimg.append(newfantas)
-        (fantasmasimgx[f], fantasmasimgy[f]) = buscar(a)
+        (fantasmasimgy[f], fantasmasimgx[f]) = buscar(a, ancho , alto)
         screen.blit(fantasmasimg[f], (fantasmasimgx[f],fantasmasimgy[f]))
         rect=fantasmasimg[f].get_rect()
         fantasmasimgrect.append(rect)
         rect.left=fantasmasimgx[f]
         rect.top=fantasmasimgy[f]
-        #print(rect )
-        #print(obstimgrects[f])
-        #print(playerrect)
-        #print("-")
-
-        x3= x3+ 50
-        y3= y3+ 50
-
-
-
-
+        a[fantasmasimgy[f]//50][fantasmasimgx[f]//50]=3
 
     runing=True
     pintar = False
@@ -114,54 +102,28 @@ def main():
 
     while runing:
 
+        print(fantasmasimgx, "------", fantasmasimgy)
+
         for row in a:
             print(' '.join([str(elem) for elem in row]))
 
-
-
-
-
-
-
-        # crear fantasmas con base en espacios vacios
-       # if crearfantasmas == False:
-        #    numeroespaciosenmapa = AgregarFantasmas(a, filas, columnas, screen)
-         #   crearfantasmas=True
-
-
-
-        #mostrar matriz inicial sin fantasmas por consola
-        #if pintar == False :
-         #   for row in a:
-          #      print(' '.join([str(elem) for elem in row]))
-            #saber filas y columnas
-            #print(a.shape)
-           # pintar = True
-
-        #asignar movimiento a cada fantasma con la matrix
-        #(playerrect,a) = MoverFantasma(playerrect,a)
-        #(player2rect,a) = MoverFantasma(player2rect, a)
 
         for evento in pg.event.get():
             if evento.type == pg.QUIT:
                 runing = False
 
 
-
         pg.time.delay(1000)
         screen.fill(black)
 
+        #pintar los obstaculos en el mapa
         for f in range(0, columnas):
             screen.blit(obstimg[f], obstimgrects[f])
 
-        #pintar y mover fantasmas
-        for p in range(0, 3):
-            (fantasmasimgrect[p],a)=MoverFantasma(fantasmasimgrect[p],a)
+        #mover y pintar fantasmas
+        for p in range(0, cantidadfantasmas):
+            (fantasmasimgrect[p],a)=MoverFantasma(fantasmasimgrect[p],a , ancho , alto)
             screen.blit(fantasmasimg[p], fantasmasimgrect[p])
-
-
-        #screen.blit(player2, player2rect)
-        #screen.blit(player, playerrect)
 
         pg.display.update()
 
@@ -189,37 +151,50 @@ def AgregarFantasmas(matrix, fi, co):
 
     return x0, y0
 
-def buscar(matrix):
+#Busca valores (x,y) para un nuevo fantasma
+def buscar(matrix, ancho,alto):
     (filaescogida, columnaescogida) = (0, 0)
     valorfila=random.randint(0, (alto // 50)-1)
     valorcolum=random.randint(0, (ancho // 50)-1)
     encontrado=False
 
-    if matrix[valorfila][valorcolum] == 0:
+    valorfila = valorfila * 50
+    valorcolum = valorcolum * 50
+
+    if valorfila == alto:
+        valorfila = valorfila - 50
+
+    if valorcolum == ancho:
+        valorcolum = valorcolum - 50
+
+    if matrix[valorfila//50][valorcolum//50] == 0:
         encontrado=True
-    elif matrix[valorfila][valorcolum] != 0:
+    elif matrix[valorfila//50][valorcolum//50] != 0:
         encontrado=False
     else:
         encontrado=False
 
-    valorfila=valorfila*50
-    valorcolum=valorcolum*50
+
 
     if encontrado == True:
         (filaescogida, columnaescogida) = (valorfila, valorcolum)
         return filaescogida,columnaescogida
     elif encontrado == False:
-        return buscar(matrix)
+        return buscar(matrix, ancho , alto)
 
+#mover fantasmas con la posicion de cada uno , la matriz del mapa, el ancho y alto de la ventana
+def MoverFantasma(fantasma, matrixobst, ancho , alto):
+    global filallave,columnallave,filapuerta,columnapuerta
+    #capturar si paso por llave o puerta
+    (hayllave,haypuerta)=(False,False)
 
-
-
-
-
-#mover fantasmas con la posicion de cada uno y la matriz del mapa
-def MoverFantasma(fantasma, matrixobst):
+    #opciones de movimiento disponibles
     opciones = []
+
+    #para escoger una direccion disponible
     (arr, aba, der, izq) = (True, True, True, True)
+
+    #para mirar si esta en un borde del mapa
     (bordearr, bordeaba, bordeder, bordeizq) = (False, False, False, False)
 
 #Capturo posicion fantasma
@@ -229,37 +204,43 @@ def MoverFantasma(fantasma, matrixobst):
     posicioncvieja=posicionc
     posicionfvieja=posicionf
 
+    #si paso por llave
+    #if matrixobst[posicionf][posicionc]==4:
+     #   print("paso por la llave")
+      #  pg.quit()
+
+
 
 
 #posicion en la que esta el fantasma en la matriz = 3
-    matrixobst[posicionf][posicionc]=3
+    #matrixobst[posicionf][posicionc]=3
     #print("actual")
     #print(posicionf, posicionc)
     #for row in matrixobst:
         #print(' '.join([str(elem) for elem in row]))
 
 #Miro si esta en un limite del mapa
-    #Esta arriba Max
+    #Esta arriba Max, no se puede mover hacia arriba
     if posicionf == 0 :
-        print("Esta Arriba")
+        #print("Esta Arriba")
         arr=False
         bordearr=True
 
-    # Esta abajo Max
+    # Esta abajo Max, no se puede mover hacia abajo
     if posicionf == (alto//50)-1:
-        print("Esta Abajo")
+        #print("Esta Abajo")
         aba=False
         bordeaba=True
 
-    # Esta izquierda Max
+    # Esta izquierda Max, no se puede mover hacia la izquierda
     if posicionc == 0:
-        print("Esta a la Izquierda")
+        #print("Esta a la Izquierda")
         izq=False
         bordeizq=True
 
-    # Esta Derecha Max
+    # Esta Derecha Max, no se puede mover hacia la derecha
     if posicionc == (ancho // 50) - 1:
-        print("Esta a la Derecha")
+        #print("Esta a la Derecha")
         der=False
         bordeder=True
 
@@ -324,11 +305,33 @@ def MoverFantasma(fantasma, matrixobst):
     posicioncnueva = fantasma.left // 50
     posicionfnueva = fantasma.top // 50
 
-#modifico posiciones viejas con 0 = vacio
+#modifico posiciones viejas con 0 = vacio, o con 4 = llave , o 5 = puerta
     #print("nueva")
     #print(posicionfnueva, posicioncnueva)
-    matrixobst[posicionfvieja][posicioncvieja] = 0
-    matrixobst[posicionfnueva][posicioncnueva] = 3
+
+    #actualizo si estaba la llave en la posicion vieja
+    if (filallave == posicionfvieja and columnallave == posicioncvieja) or (filapuerta == posicionfvieja and columnapuerta == posicioncvieja) :
+        if (filallave == posicionfvieja and columnallave == posicioncvieja):
+            matrixobst[posicionfvieja][posicioncvieja] = 4
+        elif (filapuerta == posicionfvieja and columnapuerta == posicioncvieja):
+            matrixobst[posicionfvieja][posicioncvieja] = 5
+    else :
+        matrixobst[posicionfvieja][posicioncvieja] = 0
+
+    #si me muevo a la llave o a la puerta dejo la matrix como estaba con la llave o puerta
+    if matrixobst[posicionfnueva][posicioncnueva] == 4 or matrixobst[posicionfnueva][posicioncnueva] == 5:
+        if matrixobst[posicionfnueva][posicioncnueva] == 4:
+            print("pase por la llave")
+            matrixobst[posicionfnueva][posicioncnueva] = 4
+            #(filallave,columnallave)=(posicionfnueva,posicioncnueva)
+
+        elif matrixobst[posicionfnueva][posicioncnueva] == 5:
+            print("pase por la puerta")
+            matrixobst[posicionfnueva][posicioncnueva] = 5
+            (filapuerta, columnapuerta) = (posicionfnueva, posicioncnueva)
+    else:
+        matrixobst[posicionfnueva][posicioncnueva] = 3
+
     #for row in matrixobst:
      #   print(' '.join([str(elem) for elem in row]))
 
