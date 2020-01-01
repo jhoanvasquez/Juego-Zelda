@@ -12,7 +12,7 @@ fantasmasimg = []
 fantasmasimgrect = []
 fantasmasimgx=[]
 fantasmasimgy=[]
-cantidadfantasmas=10
+cantidadfantasmas=20
 
 #lugarllave
 filallave=(alto // 50)-1
@@ -42,21 +42,17 @@ def main():
             if i == j:
                 a[i][j]=1
 
-    # agregar 0s a arrays de posiciones de fantasmas
-    fantasmasimgx = numpy.zeros((cantidadfantasmas), dtype=int)
-    fantasmasimgy = numpy.zeros((cantidadfantasmas), dtype=int)
 
 
-    #llave
-    a[ (alto // 50)-1 ][ (ancho // 50)-1]=4
-    #puerta
+
+    #llave = 4
+    a[ (alto // 50)-1 ][ (ancho // 50)-1] = 4
+    #puerta = 5
     a[(alto // 50) - 1][0] = 5
-
-
-    #screen.blit(player, (5, 5))
-    playerrect = player.get_rect()
-    playerrect.left=50
-    playerrect.top=0
+    #link = 2
+    a[(alto // 50) - 1][4] = 2
+    a[0][4] = 2
+    a[5][4] = 2
 
 
     #cargar obstaculos de prueba
@@ -73,27 +69,10 @@ def main():
         obstimgrects.append(rect)
         rect.left=x2
         rect.top=y2
-        #print(rect )
-        #print(obstimgrects[f])
-        #print(playerrect)
-        #print("-")
-
         x2= x2+ 50
         y2= y2+ 50
 
 
-    #crear fantasmas
-    for f in range(0,cantidadfantasmas):
-        newfantas=pg.image.load("fantasma.png")
-        newfantas = pg.transform.scale(player, (50, 50))
-        fantasmasimg.append(newfantas)
-        (fantasmasimgy[f], fantasmasimgx[f]) = buscar(a, ancho , alto)
-        screen.blit(fantasmasimg[f], (fantasmasimgx[f],fantasmasimgy[f]))
-        rect=fantasmasimg[f].get_rect()
-        fantasmasimgrect.append(rect)
-        rect.left=fantasmasimgx[f]
-        rect.top=fantasmasimgy[f]
-        a[fantasmasimgy[f]//50][fantasmasimgx[f]//50]=3
 
     runing=True
     pintar = False
@@ -101,8 +80,14 @@ def main():
 
 
     while runing:
+        #crear fantasmas
+        if crearfantasmas== False:
+            CrearFantasmas(screen,a)
+            crearfantasmas=True
 
-        print(fantasmasimgx, "------", fantasmasimgy)
+        print("Vuelta --------------")
+
+
 
         for row in a:
             print(' '.join([str(elem) for elem in row]))
@@ -127,37 +112,137 @@ def main():
 
         pg.display.update()
 
+#Crear fantasmas
+def CrearFantasmas(screen, a):
 
-#Agregar Fantasmas al mapa
-def AgregarFantasmas(matrix, fi, co):
-    numeroespacios=0
-    x0=0
-    y0=0
+    # agregar 0s a arrays de posiciones de fantasmas
+    fantasmasimgx = numpy.zeros((cantidadfantasmas), dtype=int)
+    fantasmasimgy = numpy.zeros((cantidadfantasmas), dtype=int)
 
-    #contar espacios en matriz
-    for i in range(fi):
-        for j in range(co):
-            if matrix[i][j] == 0:
-                numeroespacios+=1
+    # crear fantasmas
+    for f in range(0, cantidadfantasmas):
+        newfantas = pg.image.load("fantasma.png")
+        newfantas = pg.transform.scale(player, (50, 50))
+        fantasmasimg.append(newfantas)
+        (fantasmasimgy[f], fantasmasimgx[f]) = Buscar(a, ancho, alto)
+        screen.blit(fantasmasimg[f], (fantasmasimgx[f], fantasmasimgy[f]))
+        rect = fantasmasimg[f].get_rect()
+        fantasmasimgrect.append(rect)
+        rect.left = fantasmasimgx[f]
+        rect.top = fantasmasimgy[f]
+        a[fantasmasimgy[f] // 50][fantasmasimgx[f] // 50] = 3
 
-
-    numerofantasmas=numeroespacios//8
-    numerofantasmas=6
-
-    for p in range(numerofantasmas):
-
-
-        valor = random.randint(0, numeroespacios)
-
-    return x0, y0
 
 #Busca valores (x,y) para un nuevo fantasma
-def buscar(matrix, ancho,alto):
-    (filaescogida, columnaescogida) = (0, 0)
+def Buscar(matrix, ancho,alto):
+
+    #valores iniciales
     valorfila=random.randint(0, (alto // 50)-1)
     valorcolum=random.randint(0, (ancho // 50)-1)
-    encontrado=False
 
+    # valores finales
+    (filaescogida, columnaescogida) = (0, 0)
+
+    #si encontro el numero adecuado
+    encontrado=False
+    #si se cumple la distancia de link
+    lejos=False
+
+    # para mirar si esta en un borde del mapa
+    (bordearr, bordeaba, bordeder, bordeizq) = (False, False, False, False)
+
+
+#mirar si esta en un borde del mapa
+    # Esta arriba max
+    if valorfila == 0:
+        bordearr = True
+
+    # Esta abajo Max
+    if valorfila == (alto // 50) - 1:
+        bordeaba = True
+
+    # Esta izquierda Max
+    if valorcolum == 0:
+        bordeizq = True
+
+    # Esta Derecha Max
+    if valorcolum == (ancho // 50) - 1:
+        bordeder = True
+
+
+#mirar si esta en dos bordes al mismo tiempo
+    #arriba y a un lado
+    if (bordearr == True and bordeder == True) or (bordearr == True and bordeizq == True):
+        if bordearr == True and bordeder == True:
+            #print("arriba y a la derecha")
+            if (matrix[0][valorcolum-1] != 2) and (matrix[1][valorcolum-1] != 2) and (matrix[1][valorcolum] != 2) :
+                #print("si esta lejos link")
+                lejos=True
+        elif bordearr == True and bordeizq == True:
+            #print("arriba y a la izquierda")
+            if (matrix[0][1] != 2) and (matrix[1][1] != 2) and (matrix[1][0] != 2) :
+                #print("si esta lejos link")
+                lejos=True
+
+    #abajo y a un lado
+    if (bordeaba == True and bordeder == True) or (bordeaba == True and bordeizq == True):
+        if bordeaba == True and bordeder == True:
+            #print("abajo y a la derecha")
+            if (matrix[valorfila][valorcolum-1] != 2) and (matrix[valorfila-1][valorcolum-1] != 2) and (matrix[valorfila-1][valorcolum] != 2) :
+                #print("si esta lejos link")
+                lejos=True
+        elif bordeaba == True and bordeizq == True:
+            #print("abajo y a la izquierda")
+            if (matrix[valorfila][1] != 2) and (matrix[valorfila-1][1] != 2) and (matrix[valorfila-1][0] != 2) :
+                #print("si esta lejos link")
+                lejos=True
+
+#mirar si esta solo en un borde
+    # si esta arriba solamente
+    if bordearr == True and bordeaba == False and bordeder == False and bordeizq == False:
+        #print("solamente arriba")
+        if (matrix[0][valorcolum - 1] != 2) and (matrix[0][valorcolum + 1] != 2) and (matrix[1][valorcolum-1] != 2) \
+                and (matrix[1][valorcolum] != 2) and (matrix[1][valorcolum+1] != 2):
+            #print("si esta lejos link")
+            lejos = True
+
+    # si esta abajo solamente
+    if bordeaba == True and bordearr == False and bordeder == False and bordeizq == False:
+        #print("solamente abajo")
+        if (matrix[valorfila][valorcolum-1] != 2) and (matrix[valorfila][valorcolum+1] != 2) \
+                and (matrix[valorfila - 1][valorcolum-1] != 2) and (matrix[valorfila - 1][valorcolum] != 2) and (matrix[valorfila - 1][valorcolum+1] != 2):
+            #print("si esta lejos link")
+            lejos = True
+
+
+    # si esta a la izquierda solamente
+    if bordeizq == True and bordeaba == False and bordeder == False and bordearr == False:
+        #print("solamente izquierda")
+        if (matrix[valorfila-1][0] != 2) and (matrix[valorfila+1][0] != 2) and (matrix[valorfila - 1][valorcolum + 1] != 2)\
+                and (matrix[valorfila][valorcolum+1] != 2) and (matrix[valorfila + 1][valorcolum + 1] != 2):
+            #print("si esta lejos link")
+            lejos = True
+
+    # si esta a la derecha solamente
+    if bordeder == True and bordeaba == False and bordearr == False and bordeizq == False:
+        #print("solamente derecha")
+        if (matrix[valorfila-1][valorcolum] != 2) and (matrix[valorfila+1][valorcolum] != 2) and (matrix[valorfila - 1][valorcolum - 1] != 2)\
+                and (matrix[valorfila][valorcolum-1] != 2) and (matrix[valorfila + 1][valorcolum - 1] != 2):
+            #print("si esta lejos link")
+            lejos = True
+
+#mirar si no esta en ningun borde
+    if bordeder == False and bordeaba == False and bordearr == False and bordeizq == False:
+        #print("no esta en ningun borde ")
+        if (matrix[valorfila-1][valorcolum-1] != 2) and (matrix[valorfila-1][valorcolum] != 2) and (matrix[valorfila - 1][valorcolum + 1] != 2)\
+                and (matrix[valorfila][valorcolum+1] != 2) and (matrix[valorfila ][valorcolum - 1] != 2) and (matrix[valorfila+1][valorcolum-1] != 2) \
+                and (matrix[valorfila+1][valorcolum] != 2) and (matrix[valorfila + 1][valorcolum + 1] != 2):
+            #print("si esta lejos link")
+            lejos = True
+
+
+
+    #pasar valores a #*50
     valorfila = valorfila * 50
     valorcolum = valorcolum * 50
 
@@ -176,11 +261,11 @@ def buscar(matrix, ancho,alto):
 
 
 
-    if encontrado == True:
+    if encontrado == True and lejos == True:
         (filaescogida, columnaescogida) = (valorfila, valorcolum)
         return filaescogida,columnaescogida
-    elif encontrado == False:
-        return buscar(matrix, ancho , alto)
+    elif encontrado == False or lejos == False:
+        return Buscar(matrix, ancho , alto)
 
 #mover fantasmas con la posicion de cada uno , la matriz del mapa, el ancho y alto de la ventana
 def MoverFantasma(fantasma, matrixobst, ancho , alto):
@@ -212,12 +297,7 @@ def MoverFantasma(fantasma, matrixobst, ancho , alto):
 
 
 
-#posicion en la que esta el fantasma en la matriz = 3
-    #matrixobst[posicionf][posicionc]=3
-    #print("actual")
-    #print(posicionf, posicionc)
-    #for row in matrixobst:
-        #print(' '.join([str(elem) for elem in row]))
+
 
 #Miro si esta en un limite del mapa
     #Esta arriba Max, no se puede mover hacia arriba
@@ -332,8 +412,6 @@ def MoverFantasma(fantasma, matrixobst, ancho , alto):
     else:
         matrixobst[posicionfnueva][posicioncnueva] = 3
 
-    #for row in matrixobst:
-     #   print(' '.join([str(elem) for elem in row]))
 
     return fantasma, matrixobst
 
