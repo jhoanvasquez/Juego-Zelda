@@ -198,6 +198,7 @@ def main(dimension):
 
 
         pygame.time.delay(500)
+        screen.blit(screenshot, (0, 0))
 
 
         # mover y pintar fantasmas
