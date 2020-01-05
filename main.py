@@ -142,7 +142,7 @@ def main(dimension):
     crearTablero = False
     crearfantasmas = False
 
-
+    (x,y)=(0,0)
     while running:
 
         #Crear mapa
@@ -200,11 +200,14 @@ def main(dimension):
         pygame.time.delay(500)
         screen.blit(screenshot, (0, 0))
 
+        screen.blit(link, (x,y))
+        (x,y)=(x+50,y+50)
+
 
         # mover y pintar fantasmas
-        for p in range(0, cantidadfantasmas):
-            (fantasmasimgrect[p], a) = MoverFantasma(fantasmasimgrect[p], matrizTablero, ancho, alto)
-            screen.blit(fantasmasimg[p], fantasmasimgrect[p])
+        #for p in range(0, cantidadfantasmas):
+         #   (fantasmasimgrect[p], a) = MoverFantasma(fantasmasimgrect[p], matrizTablero, ancho, alto)
+          #  screen.blit(fantasmasimg[p], fantasmasimgrect[p])
 
         pygame.display.update()
 
