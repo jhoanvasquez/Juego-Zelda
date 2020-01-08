@@ -187,7 +187,7 @@ def main(dimension, aleatorio, anchoPerso, altoPerso):
     crearTablero = False
     crearfantasmas = False
 
-
+    (x,y)=(0,0)
     while running:
 
         #Crear mapa
@@ -292,8 +292,19 @@ def main(dimension, aleatorio, anchoPerso, altoPerso):
                     screen.blit(link, (link_x, link_y))
 
 
+<<<<<<< HEAD
+        screen.blit(link, (x,y))
+        (x,y)=(x+50,y+50)
+
+
+        # mover y pintar fantasmas
+        #for p in range(0, cantidadfantasmas):
+         #   (fantasmasimgrect[p], a) = MoverFantasma(fantasmasimgrect[p], matrizTablero, ancho, alto)
+          #  screen.blit(fantasmasimg[p], fantasmasimgrect[p])
+=======
         #screen.blit(screenshot, (0, 0))
 
+>>>>>>> 33eeff9f903bff1f100ae349338b5df02685611d
 
          # mover y pintar fantasmas
         """for p in range(0, cantidadfantasmas):
