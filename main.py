@@ -164,7 +164,9 @@ def main(dimension, aleatorio, anchoPerso, altoPerso):
     llave_x = random.randint(2, ((ancho/100)*2)-1)
     llave_y = random.randint(2, ((alto/100)*2)-1)
 
+
     #Puerta
+
     puerta = pygame.image.load("puerta.png")
     puerta_x = math.ceil(ancho/2)-50
     puerta_y = 0
@@ -195,7 +197,7 @@ def main(dimension, aleatorio, anchoPerso, altoPerso):
             matrizTablero = tablero(screen, ancho, alto)
             valorAnterior = 0
 
-            #Asignacion posicion llave
+            #Asignacion posicion llave y puerta
             while matrizTablero[llave_y][llave_x] == 1:
                 llave_x = random.randint((ancho/100)-1, ancho/100)
                 llave_y = random.randint((alto/100)-1, alto/100)
@@ -207,8 +209,8 @@ def main(dimension, aleatorio, anchoPerso, altoPerso):
 
             #Asignacion posicion link
             while matrizTablero[link_y][link_x] == 1:
-                link_x = random.randint(link_x, link_x+2)
-                link_y = random.randint(0, 2)
+                link_x = random.randint(link_x, link_x+3)
+                link_y = random.randint(link_y, link_y+3)
             screen.blit(link, (link_x * 50, link_y * 50))
             matrizTablero[link_y][link_x] = 2
             link_y*=50
@@ -218,12 +220,13 @@ def main(dimension, aleatorio, anchoPerso, altoPerso):
 
             matrizTablero[math.ceil(puerta_y*2/100)][math.ceil(puerta_x*2/100)] = 5
 
-            print (matrizTablero)
+
             #Creacion de fantasmas
             CrearFantasmas(screen, matrizTablero, ancho,alto)
 
             #gasto de cada movimiento
             matrizGasto = numpy.zeros((len(matrizTablero),len(matrizTablero[0])))
+
 
             for i in range(0, len(matrizTablero)):
                 for j in range (0, len(matrizTablero[0])):
@@ -231,7 +234,6 @@ def main(dimension, aleatorio, anchoPerso, altoPerso):
                         matrizGasto[i][j] = None
                     if matrizTablero[i][j] == 4:
                         matrizGasto[i][j] = 0
-
 
         #Evento para cierre de ventana
         for evento in pygame.event.get():
@@ -291,25 +293,11 @@ def main(dimension, aleatorio, anchoPerso, altoPerso):
                     matrizTablero[math.ceil(link_y/50)][math.ceil(link_x/50)] = 2
                     screen.blit(link, (link_x, link_y))
 
-
-<<<<<<< HEAD
-        screen.blit(link, (x,y))
-        (x,y)=(x+50,y+50)
-
-
-        # mover y pintar fantasmas
-        #for p in range(0, cantidadfantasmas):
-         #   (fantasmasimgrect[p], a) = MoverFantasma(fantasmasimgrect[p], matrizTablero, ancho, alto)
-          #  screen.blit(fantasmasimg[p], fantasmasimgrect[p])
-=======
-        #screen.blit(screenshot, (0, 0))
-
->>>>>>> 33eeff9f903bff1f100ae349338b5df02685611d
-
          # mover y pintar fantasmas
-        """for p in range(0, cantidadfantasmas):
+        for p in range(0, cantidadfantasmas):
                 (fantasmasimgrect[p], a) = MoverFantasma(fantasmasimgrect[p], matrizTablero, ancho, alto)
-                screen.blit(fantasmasimg[p], fantasmasimgrect[p])"""
+                screen.blit(fantasmasimg[p], fantasmasimgrect[p])
+
 
         crearTablero = True
         pygame.time.delay(500)
@@ -697,45 +685,4 @@ def calulo_manhatan(link_x, link_y, meta_x, meta_y):
 
 if __name__ == '__main__':
     #menu()
-
     main("600 x 400", True, 0, 0)
-
-    #Falta: organizar matrizG
-    #Finalizar a*
-    #Meter puerta
-    """ab=[[0,1,1],[2,5,6]]
-    #asterisco(ab, 0, 0, 2, 1)"""
-    #matrizObstaculos = numpy.zeros((2,2))
-
-    #matrizObstaculos[0][0]=4
-
-
-
-    """movi = []
-    try:
-        if type(ab[0][9]).__name__ == "int":
-            movi+=["up"]
-
-        if type(ab[0][0])==0:
-            print("entra")
-            movi+=["down"]
-        if type(ab[0][0]).__name__ == "int":
-            movi+=["rigth"]
-        if type(ab[3][4]).__name__ == "int":
-            movi+=["left"]
-    except IndexError:
-        pass
-    print(len(ab[0]))"""
-
-    """ab=[[1,2],[3,4]]
-    derecha = {'direccion':'r', "valor": 3, "manhatan":3}
-    izquierda = {'direccion':'l', "valor": 0, "manhatan":2}
-
-    up = 0
-    b=[derecha["valor"], izquierda["valor"]]
-    movements = {None : "l", None : "d", 0: "r", None : "up" }
-    #a = numpy.array([[*movements.keys()]])
-    #a.sort(axis=1)
-    print(movements.get(0)) """
-
-
