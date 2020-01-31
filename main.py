@@ -39,7 +39,7 @@ fantasmasimg = []
 fantasmasimgrect = []
 fantasmasimgx=[]
 fantasmasimgy=[]
-cantidadfantasmas=20
+cantidadfantasmas=5
 player = pygame.image.load("fantasma.png")
 player = pygame.transform.scale(player, (50, 50))
 
@@ -188,8 +188,9 @@ def main(dimension, aleatorio, anchoPerso, altoPerso):
     running = True
     crearTablero = False
     crearfantasmas = False
+    moverenemigos = True
 
-    (x,y)=(0,0)
+
     while running:
 
         #Crear mapa
@@ -201,6 +202,7 @@ def main(dimension, aleatorio, anchoPerso, altoPerso):
             while matrizTablero[llave_y][llave_x] == 1:
                 llave_x = random.randint((ancho/100)-1, ancho/100)
                 llave_y = random.randint((alto/100)-1, alto/100)
+
             matrizTablero[llave_y][llave_x] = 4
             screen.blit(llave, ((llave_x*50)+5, (llave_y*50)+5))
             screen.blit(puerta, (puerta_x-25 , puerta_y-9))
@@ -209,8 +211,14 @@ def main(dimension, aleatorio, anchoPerso, altoPerso):
 
             #Asignacion posicion link
             while matrizTablero[link_y][link_x] == 1:
+<<<<<<< HEAD
                 link_x = random.randint(link_x, link_x+3)
                 link_y = random.randint(link_y, link_y+3)
+=======
+                link_x = random.randint(link_x, link_x+2)
+                link_y = random.randint(0, 2)
+
+>>>>>>> f966a76796fd2c4e0de529136dd955fb0831bf17
             screen.blit(link, (link_x * 50, link_y * 50))
             matrizTablero[link_y][link_x] = 2
             link_y*=50
@@ -222,7 +230,8 @@ def main(dimension, aleatorio, anchoPerso, altoPerso):
 
 
             #Creacion de fantasmas
-            CrearFantasmas(screen, matrizTablero, ancho,alto)
+            CrearFantasmas(screenshot, matrizTablero, ancho,alto)
+            print(matrizTablero)
 
             #gasto de cada movimiento
             matrizGasto = numpy.zeros((len(matrizTablero),len(matrizTablero[0])))
@@ -235,14 +244,22 @@ def main(dimension, aleatorio, anchoPerso, altoPerso):
                     if matrizTablero[i][j] == 4:
                         matrizGasto[i][j] = 0
 
+<<<<<<< HEAD
+=======
+
+
+>>>>>>> f966a76796fd2c4e0de529136dd955fb0831bf17
         #Evento para cierre de ventana
         for evento in pygame.event.get():
             if evento.type == pygame.QUIT:
                 running = False
 
+
+
         #Ejecucion algoritmo de busqueda
         if math.ceil(link_x/50) == llave_x and math.ceil(link_y/50) == llave_y:
             movimiento = None
+            moverenemigos = False
             #running = False
 
         else:
@@ -293,13 +310,24 @@ def main(dimension, aleatorio, anchoPerso, altoPerso):
                     matrizTablero[math.ceil(link_y/50)][math.ceil(link_x/50)] = 2
                     screen.blit(link, (link_x, link_y))
 
+<<<<<<< HEAD
          # mover y pintar fantasmas
         for p in range(0, cantidadfantasmas):
                 (fantasmasimgrect[p], a) = MoverFantasma(fantasmasimgrect[p], matrizTablero, ancho, alto)
                 screen.blit(fantasmasimg[p], fantasmasimgrect[p])
+=======
+        # mover y pintar fantasmas
+        if moverenemigos == True:
+            for p in range(0, cantidadfantasmas):
+                (fantasmasimgrect[p], a) = MoverFantasma(fantasmasimgrect[p], matrizTablero, ancho, alto)
+                screen.blit(fantasmasimg[p], fantasmasimgrect[p])
+                print(matrizTablero)
+
+>>>>>>> f966a76796fd2c4e0de529136dd955fb0831bf17
 
 
         crearTablero = True
+        moverenemigos=True
         pygame.time.delay(500)
         pygame.display.update()
 
@@ -386,7 +414,7 @@ def CrearFantasmas(screen, a, ancho,alto):
         newfantas = pygame.transform.scale(player, (50, 50))
         fantasmasimg.append(newfantas)
         (fantasmasimgy[f], fantasmasimgx[f]) = Buscar(a, ancho, alto)
-        screen.blit(fantasmasimg[f], (fantasmasimgx[f], fantasmasimgy[f]))
+        #screen.blit(fantasmasimg[f], (fantasmasimgx[f], fantasmasimgy[f]))
         rect = fantasmasimg[f].get_rect()
         fantasmasimgrect.append(rect)
         rect.left = fantasmasimgx[f]

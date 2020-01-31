@@ -12,7 +12,7 @@ fantasmasimg = []
 fantasmasimgrect = []
 fantasmasimgx=[]
 fantasmasimgy=[]
-cantidadfantasmas=20
+cantidadfantasmas=3
 
 #lugarllave
 filallave=(alto // 50)-1
