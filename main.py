@@ -152,6 +152,9 @@ def main(dimension, aleatorio, anchoPerso, altoPerso):
         alto = altoPerso
     pygame.init()
 
+    #Suelo
+    suelo = pygame.image.load("piso.png")
+
     #Personaje Link
     link = pygame.image.load("link1.png")
     link_x = random.randint(0, 2)
@@ -164,14 +167,14 @@ def main(dimension, aleatorio, anchoPerso, altoPerso):
     llave_x = random.randint(2, ((ancho/100)*2)-1)
     llave_y = random.randint(2, ((alto/100)*2)-1)
 
+    meta_x = llave_x
+    meta_y = llave_y
 
     #Puerta
 
     puerta = pygame.image.load("puerta.png")
     puerta_x = math.ceil(ancho/2)-50
     puerta_y = 0
-    print (puerta_x)
-    #Icono y titulo ventana
     pygame.display.set_caption("Zelda")
     icon = pygame.image.load("icon.png")
     pygame.display.set_icon(icon)
@@ -189,7 +192,7 @@ def main(dimension, aleatorio, anchoPerso, altoPerso):
     crearTablero = False
     crearfantasmas = False
     moverenemigos = True
-
+    ctrl_puerta = 0
 
     while running:
 
@@ -202,23 +205,25 @@ def main(dimension, aleatorio, anchoPerso, altoPerso):
             while matrizTablero[llave_y][llave_x] == 1:
                 llave_x = random.randint((ancho/100)-1, ancho/100)
                 llave_y = random.randint((alto/100)-1, alto/100)
-
             matrizTablero[llave_y][llave_x] = 4
             screen.blit(llave, ((llave_x*50)+5, (llave_y*50)+5))
+
+
+
             screen.blit(puerta, (puerta_x-25 , puerta_y-9))
+
+            #Tomar fondo del juego
+            global screenshot
             screenshot = screen.copy()
             screen.blit(screenshot, (0, 0))
 
             #Asignacion posicion link
             while matrizTablero[link_y][link_x] == 1:
-<<<<<<< HEAD
+
                 link_x = random.randint(link_x, link_x+3)
                 link_y = random.randint(link_y, link_y+3)
-=======
-                link_x = random.randint(link_x, link_x+2)
-                link_y = random.randint(0, 2)
 
->>>>>>> f966a76796fd2c4e0de529136dd955fb0831bf17
+
             screen.blit(link, (link_x * 50, link_y * 50))
             matrizTablero[link_y][link_x] = 2
             link_y*=50
@@ -231,7 +236,6 @@ def main(dimension, aleatorio, anchoPerso, altoPerso):
 
             #Creacion de fantasmas
             CrearFantasmas(screenshot, matrizTablero, ancho,alto)
-            print(matrizTablero)
 
             #gasto de cada movimiento
             matrizGasto = numpy.zeros((len(matrizTablero),len(matrizTablero[0])))
@@ -244,26 +248,32 @@ def main(dimension, aleatorio, anchoPerso, altoPerso):
                     if matrizTablero[i][j] == 4:
                         matrizGasto[i][j] = 0
 
-<<<<<<< HEAD
-=======
-
-
->>>>>>> f966a76796fd2c4e0de529136dd955fb0831bf17
         #Evento para cierre de ventana
         for evento in pygame.event.get():
             if evento.type == pygame.QUIT:
                 running = False
 
-
-
         #Ejecucion algoritmo de busqueda
         if math.ceil(link_x/50) == llave_x and math.ceil(link_y/50) == llave_y:
-            movimiento = None
-            moverenemigos = False
-            #running = False
+            llave_x = math.ceil(puerta_x/50)
+            llave_y = math.ceil(puerta_y/50)
+
+            if ctrl_puerta == 0:
+                suelo1 = pygame.transform.scale(suelo, (97, 100))
+                screen.blit(suelo1, (link_x-24, link_y-24.8))
+                screenshot = screen.copy()
+                screen.blit(screenshot, (0, 0))
+            matrizUpdate(matrizTablero, matrizGasto)
+            movimiento = asterisco(matrizGasto,math.ceil(link_x/50)  , math.ceil(link_y/50), llave_x , llave_y)
+            ctrl_puerta += 1
+
+            if ctrl_puerta > 1:
+                movimiento = None
 
         else:
-             movimiento = asterisco(matrizGasto,math.ceil(link_x/50)  , math.ceil(link_y/50) ,llave_x , llave_y)
+            matrizUpdate(matrizTablero, matrizGasto)
+            movimiento = asterisco(matrizGasto,math.ceil(link_x/50), math.ceil(link_y/50) ,llave_x , llave_y)
+
 
         #Movimientos de link
         if crearTablero == True:
@@ -299,7 +309,6 @@ def main(dimension, aleatorio, anchoPerso, altoPerso):
                     matrizTablero[math.ceil(link_y/50)][math.ceil(link_x/50)] = 2
                     screen.blit(link, (link_x, link_y))
 
-
             if movimiento == "d":
                 if link_y <= alto-100:
                     matrizTablero[math.ceil(link_y/50)][math.ceil(link_x/50)] = valorAnterior
@@ -310,28 +319,22 @@ def main(dimension, aleatorio, anchoPerso, altoPerso):
                     matrizTablero[math.ceil(link_y/50)][math.ceil(link_x/50)] = 2
                     screen.blit(link, (link_x, link_y))
 
-<<<<<<< HEAD
          # mover y pintar fantasmas
         for p in range(0, cantidadfantasmas):
                 (fantasmasimgrect[p], a) = MoverFantasma(fantasmasimgrect[p], matrizTablero, ancho, alto)
                 screen.blit(fantasmasimg[p], fantasmasimgrect[p])
-=======
+
         # mover y pintar fantasmas
         if moverenemigos == True:
             for p in range(0, cantidadfantasmas):
                 (fantasmasimgrect[p], a) = MoverFantasma(fantasmasimgrect[p], matrizTablero, ancho, alto)
                 screen.blit(fantasmasimg[p], fantasmasimgrect[p])
-                print(matrizTablero)
-
->>>>>>> f966a76796fd2c4e0de529136dd955fb0831bf17
-
+                #print(matrizTablero)
 
         crearTablero = True
         moverenemigos=True
         pygame.time.delay(500)
         pygame.display.update()
-
-
 
 # tablero del juego
 def tablero (screen, ancho, alto):
@@ -350,7 +353,6 @@ def tablero (screen, ancho, alto):
             posicionX = random.randint(0, (math.ceil(ancho / 100)) * 2) * 50
             posicionY = random.randint(0, (math.ceil(ancho / 100)) * 2) * 50
             if posicionX <= ancho-50 and posicionY <= alto-50:
-
                 matrizObstaculos[math.floor(posicionY * 2 / 100)][math.floor(posicionX * 2 / 100)] = 1
             obsimg.append(pygame.image.load("obstaculo.png"))
             screen.blit(obsimg[z], (posicionX, posicionY))
@@ -421,6 +423,18 @@ def CrearFantasmas(screen, a, ancho,alto):
         rect.top = fantasmasimgy[f]
         a[fantasmasimgy[f] // 50][fantasmasimgx[f] // 50] = 3
 
+#Actualizar matriz gastos
+def matrizUpdate(tablero, gastos):
+    try:
+        for x in range(0, len(tablero)):
+            for i in range(0, len(tablero[0])-1):
+             if tablero[x][i] == 3:
+                gastos[x][i] = 3
+             if tablero[x][i] == 0 and gastos[x][i] == 3 and \
+                     (tablero[x-1][i] != 2 or tablero[x+1][i] != 2 or tablero[x][i-1] != 2 or tablero[x][i+1] != 2):
+                gastos[x][i] = 0
+    except :
+        pass
 
 #Busca valores (x,y) para un nuevo fantasma
 def Buscar(matrix, ancho,alto):
@@ -714,3 +728,5 @@ def calulo_manhatan(link_x, link_y, meta_x, meta_y):
 if __name__ == '__main__':
     #menu()
     main("600 x 400", True, 0, 0)
+
+#Falta pitar llave, arbol, personalizar juegos parte de componentes
