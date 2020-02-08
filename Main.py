@@ -646,11 +646,7 @@ def calulo_manhatan(link_x, link_y, meta_x, meta_y):
 
 if __name__ == '__main__':
 
-    menu()
-
-    main("400 x 200", True, 0, 0)
-
-    #main("600 x 400", True, 0, 0)
+    
     gui = GUI()
 
 
