@@ -4,10 +4,9 @@ from tkinter import filedialog
 import pygame
 import numpy
 import math
-from tkinter import *
-import tkinter as tk
 import pyautogui
 
+from GUI import *
 
 aleatorio = True
 tablero =""
@@ -40,9 +39,8 @@ fantasmasimgrect = []
 fantasmasimgx=[]
 fantasmasimgy=[]
 cantidadfantasmas=5
-player = pygame.image.load("fantasma.png")
+player = pygame.image.load("./imgs/fantasma.png")
 player = pygame.transform.scale(player, (50, 50))
-
 
 
 #lugarllave
@@ -53,87 +51,8 @@ columnallave=(ancho // 50)-1
 filapuerta=(alto // 50) - 1
 columnapuerta=0
 
-
-
-
-# menu de inicio
-def menu():
-
-
-    raiz = tk.Tk()
-    frame = Frame(raiz, width=350, height=400)
-    raiz.resizable(0, 0)
-
-    # icono
-    raiz.iconbitmap(r'icon.ico')
-
-    # labels
-    label1 = Label(frame, text="Menú del juego", width=100, height=25, font=("", 15), anchor='nw')
-    label1.place(x=5, y=5)
-
-
-    label2 = Label(frame, text="Dimensiones de la patalla", width=100, height=25, font=("", 12), anchor='nw')
-    label2.place(x=15, y=50)
-
-    label3 = Label(frame, text="Personalizar tablero:", width=100, height=25, font=("", 12), anchor='nw')
-    label3.place(x=15, y=95)
-
-    label4 = Label(frame, text="Dificultad del juego", width=100, height=25, font=("", 12), anchor='nw')
-    label4.place(x=15, y=170)
-
-    # combo
-    variable = StringVar(raiz)
-    variable.set("600 x 400")
-    combo = OptionMenu(raiz, variable, "800 x 600", "600 x 400", "400 x 200")
-    combo.place(x=240, y=45)
-
-    # botones
-    def btn():
-        raiz.destroy()
-        main(variable.get(), aleatorio, ancho, alto)
-
-    def personalizar():
-        choosePerso = filedialog.askopenfilename(filetypes=(("Archivos de texto", "*.txt"),))
-        if choosePerso != "":
-            btnPerso.config(text="☑")
-            raiz.update()
-            global aleatorio
-            aleatorio = False
-            global alto
-            global ancho
-
-
-            archivo = open(choosePerso, "r")
-            tablero = archivo.readline()
-            archivo.close()
-
-
-            alto = math.ceil(len(tablero.split(" "))/2) * 100
-            ancho = math.ceil(len(tablero.split(" ")[0].split(","))/2) * 100
-
-
-
-    btnInicio = Button(frame, text="Inicio", width=20, command=btn)
-    btnInicio.place(x=105, y=350)
-
-    btnPerso = Button(frame, text="Seleccionar archivo", width=44,  command=personalizar)
-    btnPerso.place(x=15, y=130)
-
-    # radio button
-    r1 = Radiobutton(raiz, text="Normal",  value=1)
-    r2 = Radiobutton(raiz, text="Dificil",  value=0)
-    r1.place(x=240, y=170)
-    r2.place(x=240, y=195)
-
-    #dimensiones ventana
-    raiz.geometry('{}x{}+{}+{}'.format(350, 400, (raiz.winfo_screenwidth() // 2) - 150, (raiz.winfo_screenheight() // 2) - 200))
-    raiz.title("Zelda")
-    frame.pack()
-    raiz.tk.mainloop()
-
-
 # inicio del juego
-def main(dimension, aleatorio, anchoPerso, altoPerso):
+def main(dimension, aleatorio, ancho, alto):
     if aleatorio == True:
         if dimension == "800 x 600":
             ancho = 800
@@ -148,22 +67,23 @@ def main(dimension, aleatorio, anchoPerso, altoPerso):
             alto = 200
     else:
 
-        ancho = anchoPerso
-        alto = altoPerso
+        ancho = ancho
+        alto = alto
+
     pygame.init()
 
     #Suelo
-    suelo = pygame.image.load("piso.png")
+    suelo = pygame.image.load("./imgs/piso.png")
 
     #Personaje Link
-    link = pygame.image.load("link1.png")
+    link = pygame.image.load("./imgs/link1.png")
     link_x = random.randint(0, 2)
     link_y = random.randint(0, 2)
     i=0
 
     #LLave
 
-    llave = pygame.image.load("key.png")
+    llave = pygame.image.load("./imgs/key.png")
     llave_x = random.randint(2, ((ancho/100)*2)-1)
     llave_y = random.randint(2, ((alto/100)*2)-1)
 
@@ -172,11 +92,11 @@ def main(dimension, aleatorio, anchoPerso, altoPerso):
 
     #Puerta
 
-    puerta = pygame.image.load("puerta.png")
+    puerta = pygame.image.load("./imgs/puerta.png")
     puerta_x = math.ceil(ancho/2)-50
     puerta_y = 0
     pygame.display.set_caption("Zelda")
-    icon = pygame.image.load("icon.png")
+    icon = pygame.image.load("./imgs/icon.png")
     pygame.display.set_icon(icon)
 
     screen = pygame.display.set_mode((ancho, alto))
@@ -341,7 +261,7 @@ def tablero (screen, ancho, alto):
     # ciclo para suelo
     for j in range(0, (math.ceil(alto / 100)) * 2):
         for i in range(0, (math.ceil(ancho / 100)) * 2):
-            sueloimg.append(pygame.image.load("piso.png"))
+            sueloimg.append(pygame.image.load("./imgs/piso.png"))
             screen.blit(sueloimg[i], (i * 50 - 24, j * 50 - 25))
 
     # ciclo para obstaculos
@@ -354,7 +274,7 @@ def tablero (screen, ancho, alto):
             posicionY = random.randint(0, (math.ceil(ancho / 100)) * 2) * 50
             if posicionX <= ancho-50 and posicionY <= alto-50:
                 matrizObstaculos[math.floor(posicionY * 2 / 100)][math.floor(posicionX * 2 / 100)] = 1
-            obsimg.append(pygame.image.load("obstaculo.png"))
+            obsimg.append(pygame.image.load("./imgs/obstaculo.png"))
             screen.blit(obsimg[z], (posicionX, posicionY))
     return matrizObstaculos
 
@@ -412,7 +332,7 @@ def CrearFantasmas(screen, a, ancho,alto):
 
     # crear fantasmas
     for f in range(0, cantidadfantasmas):
-        newfantas = pygame.image.load("fantasma.png")
+        newfantas = pygame.image.load("./imgs/fantasma.png")
         newfantas = pygame.transform.scale(player, (50, 50))
         fantasmasimg.append(newfantas)
         (fantasmasimgy[f], fantasmasimgx[f]) = Buscar(a, ancho, alto)
@@ -726,12 +646,19 @@ def calulo_manhatan(link_x, link_y, meta_x, meta_y):
 
 if __name__ == '__main__':
 
+<<<<<<< HEAD:main.py
     menu()
 
     main("400 x 200", True, 0, 0)
 
     #menu()
     main("600 x 400", True, 0, 0)
+=======
+    
+    gui = GUI()
+
+
+>>>>>>> 2827b93d970096e0c201ae716008a0a07b79e3f8:Main.py
 
 
 #Falta pitar llave, arbol, personalizar juegos parte de componentes
