@@ -570,7 +570,7 @@ def Buscar(matrix, ancho,alto):
     elif encontrado == False or lejos == False:
         return Buscar(matrix, ancho , alto)
 
-#mover fantasmas con la posicion de cada uno , la matriz del mapa, el ancho y alto de la ventana
+#mover fantasmas aleatoriamente con la posicion de cada uno , la matriz del mapa, el ancho y alto de la ventana
 def MoverFantasma(fantasma, matrixobst, ancho , alto):
     global filallave,columnallave,filapuerta,columnapuerta
     #capturar si paso por llave o puerta
@@ -704,12 +704,12 @@ def MoverFantasma(fantasma, matrixobst, ancho , alto):
     #si me muevo a la llave o a la puerta dejo la matrix como estaba con la llave o puerta
     if matrixobst[posicionfnueva][posicioncnueva] == 4 or matrixobst[posicionfnueva][posicioncnueva] == 5:
         if matrixobst[posicionfnueva][posicioncnueva] == 4:
-            print("pase por la llave")
+            #print("pase por la llave")
             matrixobst[posicionfnueva][posicioncnueva] = 4
             #(filallave,columnallave)=(posicionfnueva,posicioncnueva)
 
         elif matrixobst[posicionfnueva][posicioncnueva] == 5:
-            print("pase por la puerta")
+            #print("pase por la puerta")
             matrixobst[posicionfnueva][posicioncnueva] = 5
             (filapuerta, columnapuerta) = (posicionfnueva, posicioncnueva)
     else:
@@ -725,13 +725,13 @@ def calulo_manhatan(link_x, link_y, meta_x, meta_y):
     return manhatan
 
 if __name__ == '__main__':
-<<<<<<< HEAD
+
     menu()
 
     main("400 x 200", True, 0, 0)
-=======
+
     #menu()
     main("600 x 400", True, 0, 0)
->>>>>>> 6f42758e93e29958fa98e0084c64d5f548b67cad
+
 
 #Falta pitar llave, arbol, personalizar juegos parte de componentes
