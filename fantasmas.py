@@ -392,7 +392,7 @@ def CrearFantasmas(screen, a):
 
     # crear fantasmas
     for f in range(0, cantidadfantasmas):
-        newfantas = pg.image.load("fantasma.png")
+        newfantas = pg.image.load("./imgs/fantasma.png")
         newfantas = pg.transform.scale(player, (50, 50))
         fantasmasimg.append(newfantas)
         #(fantasmasimgy[f], fantasmasimgx[f]) = Buscar(a, ancho, alto)
