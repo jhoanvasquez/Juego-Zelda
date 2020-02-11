@@ -6,12 +6,13 @@ class Asterisco:
         mov_disp = []
         movimiento = []
 
+
         link_x = link_x//100
         link_y = link_y//100
         self.matriz = numpy.zeros((len(matriz),len(matriz[0])))
         self.matriz = Asterisco.bloques(self.matriz, matriz)
 
-        while link_x != meta_x and link_y != meta_y:
+        while  link_x != meta_x:
 
             if link_y-1 >= 0:
                 up = self.matriz[link_y-1][link_x] + Asterisco.calulo_manhatan(link_x, link_y-1, meta_x, meta_y)
@@ -65,12 +66,11 @@ class Asterisco:
                 link_x += 1
 
             self.matriz[link_y][link_x] = 2
-            print (self.matriz)
             a = []
             mov_disp = []
             mov_ordenados = []
-
-        print (str(link_x) +"="+str(meta_x))
+        print (self.matriz)
+        print (str(link_x) + "=" +str(meta_x))
         print (str(link_y) + "=" +str(meta_y))
         self.arrayMov = movimiento
 

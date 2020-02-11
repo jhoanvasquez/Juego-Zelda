@@ -164,7 +164,7 @@ def main(dimension, aleatorio, matrizPersonalizada, anchoPersonalizado, altoPers
                     screen.blit(fantasmasimg[p], fantasmasimgrect[p])
 
             else:
-                matrizTablero = tableroAleatorio(matrizPersonalizada, screen, suelo, obstaculo, llave, puerta, link, player)
+                matrizTablero = tableroPersonalizado(matrizPersonalizada, screen, suelo, obstaculo, llave, puerta, link, player)
 
             valorAnterior = 0
 
@@ -173,10 +173,10 @@ def main(dimension, aleatorio, matrizPersonalizada, anchoPersonalizado, altoPers
             if evento.type == pygame.QUIT:
                 running = False
 
-        """if ctrl_puerta < 1:
+        if ctrl_puerta < 1:
             asterisco = Asterisco(matrizTablero, link_x, link_y, meta_x, meta_y)
             print (asterisco.arrayMov)
-        ctrl_puerta +=1"""
+        ctrl_puerta +=1
 
         """#Movimientos de link
         if crearTablero == True:
@@ -258,7 +258,7 @@ def tablero (screen, ancho, alto):
 
 
 #Para matriz personalizada
-def tableroAleatorio(matriz, screen, suelo, obstaculo ,llave, puerta, link, fantasma):
+def tableroPersonalizado(matriz, screen, suelo, obstaculo ,llave, puerta, link, fantasma):
     for x in range(0, len(matriz)):
         for z in range(0, len(matriz[0])):
             if matriz[x][z] == 0:
@@ -597,26 +597,8 @@ def MoverFantasma(fantasma, matrixobst, ancho , alto):
 
 
 if __name__ == '__main__':
-    #gui = GUI()
-    #a = Asterisco()
-    main("600 x 400", True, [], 0, 0)
-
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD:main.py
-    menu()
-
-    main("400 x 200", True, 0, 0)
-
-    #menu()
-    main("600 x 400", True, 0, 0)
-=======
-    
-    gui = GUI()
+   #gui = GUI()
+   main("600 x 400", True, [], 0, 0)
 
 
->>>>>>> 2827b93d970096e0c201ae716008a0a07b79e3f8:Main.py
 
-
-#Falta pitar llave, arbol, personalizar juegos parte de componentes
->>>>>>> d0ec1de5c270c11bb6ae7abd1cd56f4b84fee046
