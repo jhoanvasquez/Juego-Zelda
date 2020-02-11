@@ -189,14 +189,17 @@ def main(dimension, aleatorio, ancho, alto):
 
             if ctrl_puerta > 1:
                 movimiento = None
+                moverenemigos=False
 
         else:
             matrizUpdate(matrizTablero, matrizGasto)
             movimiento = asterisco(matrizGasto,math.ceil(link_x/50), math.ceil(link_y/50) ,llave_x , llave_y)
 
 
+
         #Movimientos de link
         if crearTablero == True:
+
 
             if movimiento == "l":
                 if link_x >= 50:
@@ -239,20 +242,29 @@ def main(dimension, aleatorio, ancho, alto):
                     matrizTablero[math.ceil(link_y/50)][math.ceil(link_x/50)] = 2
                     screen.blit(link, (link_x, link_y))
 
-         # mover y pintar fantasmas
-        for p in range(0, cantidadfantasmas):
-                (fantasmasimgrect[p], a) = MoverFantasma(fantasmasimgrect[p], matrizTablero, ancho, alto)
-                screen.blit(fantasmasimg[p], fantasmasimgrect[p])
+            # mover y pintar fantasmas
+            #if moverenemigos == True:
+             #   for p in range(0, cantidadfantasmas):
+              #      (fantasmasimgrect[p], a) = MoverFantasma(fantasmasimgrect[p], matrizTablero, ancho, alto)
+               #     screen.blit(fantasmasimg[p], fantasmasimgrect[p])
+                    #print(matrizTablero)
 
-        # mover y pintar fantasmas
-        if moverenemigos == True:
+         # mover y pintar fantasmas
+        if moverenemigos==True:
             for p in range(0, cantidadfantasmas):
                 (fantasmasimgrect[p], a) = MoverFantasma(fantasmasimgrect[p], matrizTablero, ancho, alto)
                 screen.blit(fantasmasimg[p], fantasmasimgrect[p])
+            #    print(matrizTablero)
+
+        # mover y pintar fantasmas
+        #if moverenemigos == True:
+         #   for p in range(0, cantidadfantasmas):
+          #      (fantasmasimgrect[p], a) = MoverFantasma(fantasmasimgrect[p], matrizTablero, ancho, alto)
+           #     screen.blit(fantasmasimg[p], fantasmasimgrect[p])
                 #print(matrizTablero)
 
         crearTablero = True
-        moverenemigos=True
+        moverenemigos= True
         pygame.time.delay(500)
         pygame.display.update()
 
@@ -646,19 +658,16 @@ def calulo_manhatan(link_x, link_y, meta_x, meta_y):
 
 if __name__ == '__main__':
 
-<<<<<<< HEAD:main.py
-    menu()
-
-    main("400 x 200", True, 0, 0)
 
     #menu()
-    main("600 x 400", True, 0, 0)
-=======
+
+    #main("400 x 200", True, 0, 0)
+
+    #menu()
+    #main("600 x 400", True, 0, 0)
+
     
     gui = GUI()
-
-
->>>>>>> 2827b93d970096e0c201ae716008a0a07b79e3f8:Main.py
 
 
 #Falta pitar llave, arbol, personalizar juegos parte de componentes
