@@ -173,7 +173,41 @@ def main(dimension, aleatorio, matrizPersonalizada, anchoPersonalizado, altoPers
             if evento.type == pygame.QUIT:
                 running = False
 
+<<<<<<< HEAD
         if ctrl_puerta < 1:
+=======
+<<<<<<< HEAD
+        #Ejecucion algoritmo de busqueda
+        if math.ceil(link_x/50) == llave_x and math.ceil(link_y/50) == llave_y:
+            llave_x = math.ceil(puerta_x/50)
+            llave_y = math.ceil(puerta_y/50)
+
+            if ctrl_puerta == 0:
+                suelo1 = pygame.transform.scale(suelo, (97, 100))
+                screen.blit(suelo1, (link_x-24, link_y-24.8))
+                screenshot = screen.copy()
+                screen.blit(screenshot, (0, 0))
+            matrizUpdate(matrizTablero, matrizGasto)
+            movimiento = asterisco(matrizGasto,math.ceil(link_x/50)  , math.ceil(link_y/50), llave_x , llave_y)
+            ctrl_puerta += 1
+
+            if ctrl_puerta > 1:
+                movimiento = None
+                moverenemigos=False
+
+        else:
+            matrizUpdate(matrizTablero, matrizGasto)
+            movimiento = asterisco(matrizGasto,math.ceil(link_x/50), math.ceil(link_y/50) ,llave_x , llave_y)
+
+
+
+        #Movimientos de link
+        if crearTablero == True:
+
+
+=======
+        """if ctrl_puerta < 1:
+>>>>>>> 00110dc0c3115a18fcd3dd233ea0b7c3cd9c9f78
             asterisco = Asterisco(matrizTablero, link_x, link_y, meta_x, meta_y)
             print (asterisco.arrayMov)
         ctrl_puerta +=1
@@ -181,6 +215,7 @@ def main(dimension, aleatorio, matrizPersonalizada, anchoPersonalizado, altoPers
         """#Movimientos de link
         if crearTablero == True:
             movimiento = "d"
+>>>>>>> 2deedbaac963269a82439e4a7a12646be332dc22
             if movimiento == "l":
                 if link_x >= 50:
                     matrizTablero[math.ceil(link_y/50)][math.ceil(link_x/50)] = valorAnterior
@@ -220,6 +255,30 @@ def main(dimension, aleatorio, matrizPersonalizada, anchoPersonalizado, altoPers
                     screen.blit(screenshot, (0, 0))
                     matrizGasto[math.ceil(link_y/50)-1][math.ceil(link_x/50)] += 1
                     matrizTablero[math.ceil(link_y/50)][math.ceil(link_x/50)] = 2
+<<<<<<< HEAD
+                    screen.blit(link, (link_x, link_y))
+
+            # mover y pintar fantasmas
+            #if moverenemigos == True:
+             #   for p in range(0, cantidadfantasmas):
+              #      (fantasmasimgrect[p], a) = MoverFantasma(fantasmasimgrect[p], matrizTablero, ancho, alto)
+               #     screen.blit(fantasmasimg[p], fantasmasimgrect[p])
+                    #print(matrizTablero)
+
+         # mover y pintar fantasmas
+        if moverenemigos==True:
+            for p in range(0, cantidadfantasmas):
+                (fantasmasimgrect[p], a) = MoverFantasma(fantasmasimgrect[p], matrizTablero, ancho, alto)
+                screen.blit(fantasmasimg[p], fantasmasimgrect[p])
+            #    print(matrizTablero)
+
+        # mover y pintar fantasmas
+        #if moverenemigos == True:
+         #   for p in range(0, cantidadfantasmas):
+          #      (fantasmasimgrect[p], a) = MoverFantasma(fantasmasimgrect[p], matrizTablero, ancho, alto)
+           #     screen.blit(fantasmasimg[p], fantasmasimgrect[p])
+                #print(matrizTablero)
+=======
                     screen.blit(link, (link_x, link_y))"""
 
         # mover y pintar fantasmas
@@ -228,9 +287,10 @@ def main(dimension, aleatorio, matrizPersonalizada, anchoPersonalizado, altoPers
                 (fantasmasimgrect[p], a) = MoverFantasma(fantasmasimgrect[p], matrizTablero, ancho, alto)
                 screen.blit(fantasmasimg[p], fantasmasimgrect[p])
                 #print(matrizTablero)"""
+>>>>>>> 2deedbaac963269a82439e4a7a12646be332dc22
 
         crearTablero = True
-        moverenemigos=True
+        moverenemigos= True
         pygame.time.delay(500)
         pygame.display.update()
 
@@ -600,5 +660,36 @@ if __name__ == '__main__':
    #gui = GUI()
    main("600 x 400", True, [], 0, 0)
 
+<<<<<<< HEAD
 
 
+=======
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD:main.py
+    menu()
+>>>>>>> 2deedbaac963269a82439e4a7a12646be332dc22
+
+    #menu()
+
+    #main("400 x 200", True, 0, 0)
+
+    #menu()
+    #main("600 x 400", True, 0, 0)
+
+    
+    gui = GUI()
+
+
+<<<<<<< HEAD
+#Falta pitar llave, arbol, personalizar juegos parte de componentes
+=======
+>>>>>>> 2827b93d970096e0c201ae716008a0a07b79e3f8:Main.py
+
+
+#Falta pitar llave, arbol, personalizar juegos parte de componentes
+>>>>>>> d0ec1de5c270c11bb6ae7abd1cd56f4b84fee046
+>>>>>>> 2deedbaac963269a82439e4a7a12646be332dc22
+>>>>>>> 00110dc0c3115a18fcd3dd233ea0b7c3cd9c9f78
