@@ -446,7 +446,7 @@ def Buscar(matrix, ancho,alto):
     elif encontrado == False or lejos == False:
         return Buscar(matrix, ancho , alto)
 
-#mover fantasmas con la posicion de cada uno , la matriz del mapa, el ancho y alto de la ventana
+#mover fantasmas aleatoriamente con la posicion de cada uno , la matriz del mapa, el ancho y alto de la ventana
 def MoverFantasma(fantasma, matrixobst, ancho , alto):
     global filallave,columnallave,filapuerta,columnapuerta
     #capturar si paso por llave o puerta
@@ -580,12 +580,12 @@ def MoverFantasma(fantasma, matrixobst, ancho , alto):
     #si me muevo a la llave o a la puerta dejo la matrix como estaba con la llave o puerta
     if matrixobst[posicionfnueva][posicioncnueva] == 4 or matrixobst[posicionfnueva][posicioncnueva] == 5:
         if matrixobst[posicionfnueva][posicioncnueva] == 4:
-            print("pase por la llave")
+            #print("pase por la llave")
             matrixobst[posicionfnueva][posicioncnueva] = 4
             #(filallave,columnallave)=(posicionfnueva,posicioncnueva)
 
         elif matrixobst[posicionfnueva][posicioncnueva] == 5:
-            print("pase por la puerta")
+            #print("pase por la puerta")
             matrixobst[posicionfnueva][posicioncnueva] = 5
             (filapuerta, columnapuerta) = (posicionfnueva, posicioncnueva)
     else:
@@ -601,3 +601,22 @@ if __name__ == '__main__':
     #a = Asterisco()
     main("600 x 400", True, [], 0, 0)
 
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD:main.py
+    menu()
+
+    main("400 x 200", True, 0, 0)
+
+    #menu()
+    main("600 x 400", True, 0, 0)
+=======
+    
+    gui = GUI()
+
+
+>>>>>>> 2827b93d970096e0c201ae716008a0a07b79e3f8:Main.py
+
+
+#Falta pitar llave, arbol, personalizar juegos parte de componentes
+>>>>>>> d0ec1de5c270c11bb6ae7abd1cd56f4b84fee046
