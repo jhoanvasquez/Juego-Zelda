@@ -1,9 +1,9 @@
 from tkinter import *
+from tkinter import filedialog
 import tkinter as tk
 from Main import *
 
 class GUI:
-
     def __init__(self):
         raiz = tk.Tk()
         frame = Frame(raiz, width=350, height=400)
@@ -36,10 +36,10 @@ class GUI:
         # botones
         def btn():
             raiz.destroy()
-            main(variable.get(), aleatorio, 0, 0)
+            main(variable.get(), aleatorio, matrizTablero, ancho, alto)
 
         def personalizar():
-            global alto, ancho, variable, aleatorio
+            global alto, ancho, variable, aleatorio, matrizTablero
             choosePerso = filedialog.askopenfilename(filetypes=(("Archivos de texto", "*.txt"),))
             if choosePerso != "":
                 btnPerso.config(text="☑")
@@ -52,11 +52,18 @@ class GUI:
                 archivo.close()
 
 
-                alto = math.ceil(len(tablero.split(" "))/2) * 100
-                ancho = math.ceil(len(tablero.split(" ")[0].split(","))/2) * 100
+                alto = math.ceil(len(tablero.split(" "))) * 100
+                ancho = math.ceil(len(tablero.split(" ")[0].split(","))) * 100
 
-
-
+                matrizTablero = numpy.zeros((alto // 100, ancho // 100))
+                j=0
+                for x in range(0, alto // 100):
+                    matriz = tablero.split(" ")[x]
+                    for i in range (0 , len(tablero.split(" ")[0])-1):
+                        if matriz[i] != "[" and matriz[i] != "]" and matriz[i] != ",":
+                            matrizTablero[x][j] = float(matriz[i])
+                            j += 1
+                    j = 0
         btnInicio = Button(frame, text="Inicio", width=20, command=btn)
         btnInicio.place(x=105, y=350)
 
@@ -74,4 +81,3 @@ class GUI:
         raiz.title("Zelda")
         frame.pack()
         raiz.tk.mainloop()
-
