@@ -7,10 +7,14 @@ class Asterisco:
         movimiento = []
 
         self.matriz = numpy.zeros((len(matriz), len(matriz[0])))
-        self.matriz = Asterisco.bloques(self.matriz, matriz)
+        self.matriz = matriz
+
 
         while True:
-            if link_x == meta_y and link_y == meta_y:
+            print (self.matriz)
+            if link_x == meta_x and link_y == meta_y:
+                self.mov = [None]
+
                 break
             if link_y-1 >= 0:
                 up = self.matriz[link_y-1][link_x] + Asterisco.calulo_manhatan(link_x, link_y-1, meta_x, meta_y)
@@ -61,30 +65,13 @@ class Asterisco:
                 link_x += 1
             if movements.get(mov_ordenados[0]) == "u":
                 link_y -= 1
-            self.matriz[link_y][link_x] = 2
             mov_ordenados = []
 
-        print (self.matriz)
-        print (str(link_x) + "=" +str(meta_x))
-        print (str(link_y) + "=" +str(meta_y))
-        self.arrayMov = movimiento
+        self.mov = movimiento
 
 
     def calulo_manhatan(link_x, link_y, meta_x, meta_y):
-      manhatan=math.ceil(math.fabs(link_x - meta_x)) + math.ceil(math.fabs(link_y - meta_y))
-      return manhatan
+        manhatan=math.ceil(math.fabs(link_x - meta_x)) + math.ceil(math.fabs(link_y - meta_y))
+        return manhatan
 
-    def bloques(matriz, matrizT):
-        for i in range(0, len(matriz)):
-            for j in range(0, len(matriz[0])):
-                if matrizT[i][j] == 0:
-                    matriz[i][j] = 0
-                if matrizT[i][j] == 3:
-                    matriz[i][j] = 3
-                if matrizT[i][j] == 4:
-                    matriz[i][j] = 1
-                if matrizT[i][j] == 5:
-                    matriz[i][j] = 1
-                if matrizT[i][j] == 1:
-                   matriz[i][j] = None
-        return matriz
+
