@@ -304,6 +304,8 @@ def Libres(posicionf,posicionc,matrixobst, ancho , alto, arbol, linkf, linkc):
     elif ancestro == True:
         print("YA ESTA REPETIDO , me quito de la lista y envio a mi hermano. porque ENTRA EN CICLO")
 
+    ######
+
 
 
 

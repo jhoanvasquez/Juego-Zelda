@@ -82,8 +82,8 @@ def main(dimension, aleatorio, matrizPersonalizada, anchoPersonalizado, altoPers
     #LLave
 
     llave = pygame.image.load("./imgs/key.png")
-    llave_x = random.randint(2, ((ancho/100)*2)-1)
-    llave_y = random.randint(2, ((alto/100)*2)-1)
+    llave_x = random.randint(2, 7)
+    llave_y = random.randint(2, 7)
 
     meta_x = llave_x
     meta_y = llave_y
@@ -117,8 +117,7 @@ def main(dimension, aleatorio, matrizPersonalizada, anchoPersonalizado, altoPers
 
         #Crear mapa
         if crearTablero == False:
-
-
+            global matrizTablero
             if aleatorio == True:
                 matrizTablero = tablero(screen, ancho, alto)
 
@@ -142,13 +141,13 @@ def main(dimension, aleatorio, matrizPersonalizada, anchoPersonalizado, altoPers
                 screenshot = screen.copy()
                 screen.blit(screenshot, (0, 0))
 
+
                 screen.blit(link, (link_x * 50, link_y * 50))
                 matrizTablero[link_y][link_x] = 2
-                link_y*=50
-                link_x*=50
 
 
-                #Asignacion posicion puerta
+                #Asignacion posici
+                # on puerta
 
                 matrizTablero[math.ceil(puerta_y*2/100)][math.ceil(puerta_x*2/100)] = 5
 
@@ -164,15 +163,20 @@ def main(dimension, aleatorio, matrizPersonalizada, anchoPersonalizado, altoPers
                     screen.blit(fantasmasimg[p], fantasmasimgrect[p])
 
             else:
-                matrizTablero = tableroPersonalizado(matrizPersonalizada, screen, suelo, obstaculo, llave, puerta, link, player)
+                matrizTablero = matrizPersonalizada
+                matrizGasto = numpy.zeros((len(matrizTablero),len(matrizTablero[0])))
+                tableroPersonalizado(matrizPersonalizada, screen, suelo, obstaculo, llave, puerta, link, player)
+                screenshot = screen.copy()
+                link_x =3
+                link_y=2
+                meta_x=1
+                meta_y=0
 
-            valorAnterior = 0
+        #Actulizacion de matrices
+        matrizGasto = matrizUpdate(matrizTablero, matrizGasto)
 
-        #Evento para cierre de ventana
-        for evento in pygame.event.get():
-            if evento.type == pygame.QUIT:
-                running = False
 
+<<<<<<< HEAD
 
         if ctrl_puerta < 1:
 
@@ -193,13 +197,24 @@ def main(dimension, aleatorio, matrizPersonalizada, anchoPersonalizado, altoPers
                 if ctrl_puerta > 1:
                     movimiento = None
                     moverenemigos=False
+=======
+        #Llamado a algorimto de busqueda Link
+        global mov
 
-        else:
-            matrizUpdate(matrizTablero, matrizGasto)
-            movimiento = asterisco(matrizGasto,math.ceil(link_x/50), math.ceil(link_y/50) ,llave_x , llave_y)
+        print (matrizTablero)
+        asterisco = Asterisco(matrizGasto, link_x, link_y, meta_x, meta_y)
+        mov = asterisco.mov
+>>>>>>> 2a7be6242f4979066daffe84bc7ed032959dfffa
 
 
+        #Evento para cierre de ventana
+        for evento in pygame.event.get():
+            if evento.type == pygame.QUIT:
+                running = False
 
+        valorAnterior = 0
+
+<<<<<<< HEAD
 
 
 
@@ -270,6 +285,22 @@ def main(dimension, aleatorio, matrizPersonalizada, anchoPersonalizado, altoPers
                 screen.blit(fantasmasimg[p], fantasmasimgrect[p])
             #    print(matrizTablero)
 
+=======
+        #Movimientos de link
+
+        if(mov == []):
+            mov = [None]
+        if crearTablero == True:
+            movimiento = moverLink(mov[0], link_x, link_y, matrizTablero, matrizGasto, valorAnterior)
+            link_x = movimiento[0]
+            link_y = movimiento[1]
+            matrizTablero = movimiento[2]
+            matrizGasto = movimiento[3]
+            valorAnterior = movimiento[4]
+            screen.blit(screenshot, (0, 0))
+            screen.blit(link, (link_x * 50, link_y * 50))
+            #print (matrizTablero)
+>>>>>>> 2a7be6242f4979066daffe84bc7ed032959dfffa
 
 
         crearTablero = True
@@ -299,15 +330,57 @@ def tablero (screen, ancho, alto):
             screen.blit(obsimg[z], (posicionX, posicionY))
     return matrizObstaculos
 
+#Movimientos de link
+def moverLink(movimiento, link_x, link_y, matrizTablero, matrizGasto, valorAnterior):
+        link_x *= 50
+        link_y *= 50
+
+        if movimiento == "l":
+            if link_x >= 50:
+                matrizTablero[math.ceil(link_y/50)][math.ceil(link_x/50)] = valorAnterior
+                valorAnterior = matrizTablero[math.ceil(link_y/50)][math.ceil(link_x/50)-1]
+                link_x -= 50
+                matrizTablero[math.ceil(link_y/50)][math.ceil(link_x/50)] = 2
+                matrizGasto[math.ceil(link_y/50)][math.ceil(link_x/50)+1] +=1
+
+        if movimiento == "r":
+            if link_x <= ancho-100:
+                matrizTablero[math.ceil(link_y/50)][math.ceil(link_x/50)] = valorAnterior
+                valorAnterior = matrizTablero[math.ceil(link_y/50)][math.ceil(link_x/50)+1]
+                link_x += 50
+                matrizGasto[math.ceil(link_y/50)][math.ceil(link_x/50)-1]+=1
+                matrizTablero[math.ceil(link_y/50)][math.ceil(link_x/50)] = 2
+
+
+        if movimiento == "u":
+            if link_y >= 50:
+                matrizTablero[math.ceil(link_y/50)][math.ceil(link_x/50)] = valorAnterior
+                valorAnterior = matrizTablero[math.ceil(link_y/50)-1][math.ceil(link_x/50)]
+                link_y -= 50
+                matrizGasto[math.ceil(link_y/50)+1][math.ceil(link_x/50)] += 1
+                matrizTablero[math.ceil(link_y/50)][math.ceil(link_x/50)] = 2
+
+
+        if movimiento == "d":
+            if link_y <= alto-100:
+                matrizTablero[math.ceil(link_y/50)][math.ceil(link_x/50)] = valorAnterior
+                valorAnterior = matrizTablero[math.ceil(link_y/50)+1][math.ceil(link_x/50)]
+                link_y += 50
+                matrizGasto[math.ceil(link_y/50)-1][math.ceil(link_x/50)] += 1
+                matrizTablero[math.ceil(link_y/50)][math.ceil(link_x/50)] = 2
+
+        return math.ceil(link_x/50), math.ceil(link_y/50), matrizTablero, matrizGasto, valorAnterior
+
+
 
 #Para matriz personalizada
 def tableroPersonalizado(matriz, screen, suelo, obstaculo ,llave, puerta, link, fantasma):
     for x in range(0, len(matriz)):
         for z in range(0, len(matriz[0])):
             if matriz[x][z] == 0:
-                screen.blit(obstaculo, (z*50, x*50))
-            if matriz[x][z] == 1:
                 screen.blit(suelo, (z*50-25, x*50-25))
+            if matriz[x][z] == 1:
+                screen.blit(obstaculo, (z*50, x*50))
             if matriz[x][z] == 2:
                 screen.blit(suelo, (z*50-25, x*50-25))
                 screen.blit(link, (z*50, x*50))
@@ -349,12 +422,14 @@ def matrizUpdate(tablero, gastos):
             for i in range(0, len(tablero[0])-1):
              if tablero[x][i] == 3:
                 gastos[x][i] = 3
-             if tablero[x][i] == 0 and gastos[x][i] == 3 and \
+             if tablero[x][i] == 1:
+                gastos[x][i] = None
+             """if tablero[x][i] == 0 and gastos[x][i] == 3 and \
                      (tablero[x-1][i] != 2 or tablero[x+1][i] != 2 or tablero[x][i-1] != 2 or tablero[x][i+1] != 2):
-                gastos[x][i] = 0
+                gastos[x][i] = 0"""
     except :
         pass
-
+    return gastos
 #Busca valores (x,y) para un nuevo fantasma
 def Buscar(matrix, ancho,alto):
 
@@ -640,6 +715,7 @@ def MoverFantasma(fantasma, matrixobst, ancho , alto):
 
 
 if __name__ == '__main__':
+<<<<<<< HEAD
    #gui = GUI()
    main("600 x 400", True, [], 0, 0)
 
@@ -654,9 +730,24 @@ if __name__ == '__main__':
 
     
         #gui = GUI()
+=======
+    gui = GUI()
+    #main("600 x 400", True, [], 0, 0)
+    """a =[10]
+    
+    def algo(w, x):
+        w+=[3]
+        w+=[2]
+        return w
+>>>>>>> 2a7be6242f4979066daffe84bc7ed032959dfffa
 
+    algo1 = algo(a, 3)
+    print (algo1[0])"""
 
+<<<<<<< HEAD
 
 #Falta pitar llave, arbol, personalizar juegos parte de componentes
 
 #Falta pitar llave, arbol, personalizar juegos parte de componentes
+=======
+>>>>>>> 2a7be6242f4979066daffe84bc7ed032959dfffa
