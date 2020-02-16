@@ -59,7 +59,7 @@ class GUI:
                 j=0
                 for x in range(0, alto // 100):
                     matriz = tablero.split(" ")[x]
-                    for i in range (0 , len(tablero.split(" ")[0])-1):
+                    for i in range (0 , len(tablero.split(" ")[0])):
                         if matriz[i] != "[" and matriz[i] != "]" and matriz[i] != ",":
                             matrizTablero[x][j] = float(matriz[i])
                             j += 1

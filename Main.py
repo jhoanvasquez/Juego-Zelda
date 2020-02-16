@@ -7,9 +7,6 @@ from GUI import *
 from Asterisco import *
 
 aleatorio = True
-tablero =""
-ancho = 0
-alto=0
 
 #tamaños
 width=800
@@ -30,7 +27,7 @@ sueloimg = []
 # cargar img obtaculo
 obsimg = []
 
-
+global fantasmasimgx, fantasmasimgy
 #fantasmas
 fantasmasimg = []
 fantasmasimgrect = []
@@ -111,7 +108,9 @@ def main(dimension, aleatorio, matrizPersonalizada, anchoPersonalizado, altoPers
     crearTablero = False
     crearfantasmas = False
     moverenemigos = True
-    ctrl_puerta = 0
+    valorAnterior = 0
+    busqueda1 = True
+    global screenshot
 
     while running:
 
@@ -122,22 +121,21 @@ def main(dimension, aleatorio, matrizPersonalizada, anchoPersonalizado, altoPers
                 matrizTablero = tablero(screen, ancho, alto)
 
                 #Asignacion posicion llave y puerta
-                while matrizTablero[llave_y][llave_x] == 1:
-                    llave_x = random.randint((ancho/100)-1, ancho/100)
-                    llave_y = random.randint((alto/100)-1, alto/100)
+                posLlave = asignacion(matrizTablero, llave_x, llave_y)
+                llave_x = posLlave[0]
+                llave_y = posLlave[1]
                 matrizTablero[llave_y][llave_x] = 4
                 screen.blit(llave, ((llave_x*50)+5, (llave_y*50)+5))
                 screen.blit(puerta, (puerta_x-25 , puerta_y-9))
 
                 #Asignacion posicion link
 
-                while matrizTablero[link_y][link_x] == 1:
+                posLink = asignacion(matrizTablero, link_x, link_y)
+                link_x = posLink[0]
+                llave_y = posLink[1]
 
-                    link_x = random.randint(link_x, link_x+3)
-                    link_y = random.randint(link_y, link_y+3)
 
                 #Tomar fondo del juego
-                global screenshot
                 screenshot = screen.copy()
                 screen.blit(screenshot, (0, 0))
 
@@ -165,31 +163,42 @@ def main(dimension, aleatorio, matrizPersonalizada, anchoPersonalizado, altoPers
             else:
                 matrizTablero = matrizPersonalizada
                 matrizGasto = numpy.zeros((len(matrizTablero),len(matrizTablero[0])))
-                tableroPersonalizado(matrizPersonalizada, screen, suelo, obstaculo, llave, puerta, link, player)
+                personalizado = tableroPersonalizado(matrizPersonalizada, screen, suelo, obstaculo, llave, puerta, link, player)
+                link_x = personalizado[0]
+                link_y = personalizado[1]
+                meta_x = personalizado[2]
+                meta_y = personalizado[3]
+                puerta_x = personalizado[4] * 50
+                puerta_y = personalizado[5] * 50
                 screenshot = screen.copy()
-                link_x =3
-                link_y=2
-                meta_x=1
-                meta_y=0
+                screen.blit(screenshot, (0, 0))
+                screen.blit(link, (link_x, link_y))
 
-        #Actulizacion de matrices
+        if link_x == meta_x and link_y == meta_y:
+            matrizGasto = numpy.zeros((len(matrizTablero),len(matrizTablero[0])))
+            meta_x = math.ceil(puerta_x/50)
+            meta_y = math.ceil(puerta_y/50)
+            #suelo1 = pygame.transform.scale(suelo, (97, 100))
+            #screen.blit(suelo1, (link_x-24, link_y-24.8))
+            #screenshot = screen.copy()
+            #screen.blit(screenshot, (0, 0))
+
+
+    #Actulizacion de matrices
         matrizGasto = matrizUpdate(matrizTablero, matrizGasto)
-
+        matrizCopia = matrizGasto.copy()
 
         #Llamado a algorimto de busqueda Link
         global mov
 
-        print (matrizTablero)
-        asterisco = Asterisco(matrizGasto, link_x, link_y, meta_x, meta_y)
+        asterisco = Asterisco(matrizCopia, link_x, link_y, meta_x, meta_y)
         mov = asterisco.mov
-
 
         #Evento para cierre de ventana
         for evento in pygame.event.get():
             if evento.type == pygame.QUIT:
                 running = False
 
-        valorAnterior = 0
 
         #Movimientos de link
 
@@ -204,7 +213,6 @@ def main(dimension, aleatorio, matrizPersonalizada, anchoPersonalizado, altoPers
             valorAnterior = movimiento[4]
             screen.blit(screenshot, (0, 0))
             screen.blit(link, (link_x * 50, link_y * 50))
-            #print (matrizTablero)
 
 
         crearTablero = True
@@ -275,28 +283,90 @@ def moverLink(movimiento, link_x, link_y, matrizTablero, matrizGasto, valorAnter
 
         return math.ceil(link_x/50), math.ceil(link_y/50), matrizTablero, matrizGasto, valorAnterior
 
+def asignacion(matriz, posX, posY):
+    obstaculo = 0
+    try:
+        if matriz [posY][posX] == 1:
+            obstaculo += 3
+
+        if matriz [posY-1][posX] == 1:
+            obstaculo += 1
+
+        if matriz [posY+1][posX] == 1:
+            obstaculo += 1
+
+        if matriz [posY][posX-1] == 1:
+            obstaculo += 1
+
+        if matriz [posY][posX+1] == 1:
+            obstaculo += 1
+    except:
+        pass
+    if obstaculo < 3:
+        return posX, posY
+    else:
+        for x in range(1, len(matriz)-1):
+         for z in range(1, len(matriz[0])-1):
+             if matriz [x-1][z] != 1:
+                 obstaculo -= 1
+
+             if matriz [x+1][z] == 1:
+                obstaculo -= 1
+
+             if matriz [x][z-1] == 1:
+                obstaculo -= 1
+
+             if matriz [x][z+1] == 1:
+                obstaculo -= 1
+
+             posX = z
+             posY = x
+             return  posX, posY
+             break
+
+
 
 
 #Para matriz personalizada
 def tableroPersonalizado(matriz, screen, suelo, obstaculo ,llave, puerta, link, fantasma):
+    fantasmasimgx = []
+    fantasmasimgy = []
+    puerta_x = 0
+    puerta_y = 0
+
     for x in range(0, len(matriz)):
         for z in range(0, len(matriz[0])):
             if matriz[x][z] == 0:
                 screen.blit(suelo, (z*50-25, x*50-25))
+
             if matriz[x][z] == 1:
                 screen.blit(obstaculo, (z*50, x*50))
+
             if matriz[x][z] == 2:
                 screen.blit(suelo, (z*50-25, x*50-25))
-                screen.blit(link, (z*50, x*50))
+                #screen.blit(link, (z*50, x*50))
+                link_x = z
+                link_y = x
+
             if matriz[x][z] == 3:
                 screen.blit(suelo, (z*50-25, x*50-25))
                 screen.blit(fantasma, (z*50, x*50))
+                fantasmasimgx +=[z*50]
+                fantasmasimgy +=[x*50]
+
             if matriz[x][z] == 4:
                 screen.blit(suelo, (z*50-25, x*50-25))
                 screen.blit(llave, (z*50+5, x*50+5))
+                llave_x = z
+                llave_y = x
+
             if matriz[x][z] == 5:
                 screen.blit(suelo, (z*50-25, x*50-25))
                 screen.blit(puerta, (z*50-25 , x*50-9))
+                puerta_x = z
+                puerta_y = x
+
+    return link_x, link_y, llave_x, llave_y, puerta_x, puerta_y, fantasmasimgx, fantasmasimgy
 
 #para fantasmas
 #Crear fantasmas
@@ -323,7 +393,7 @@ def CrearFantasmas(screen, a, ancho,alto):
 def matrizUpdate(tablero, gastos):
     try:
         for x in range(0, len(tablero)):
-            for i in range(0, len(tablero[0])-1):
+            for i in range(0, len(tablero[0])):
              if tablero[x][i] == 3:
                 gastos[x][i] = 3
              if tablero[x][i] == 1:
@@ -619,15 +689,15 @@ def MoverFantasma(fantasma, matrixobst, ancho , alto):
 
 
 if __name__ == '__main__':
-    gui = GUI()
-    #main("600 x 400", True, [], 0, 0)
-    """a =[10]
+    #gui = GUI()
+    main("600 x 400", True, [], 0, 0)
+    """a =[]
     
-    def algo(w, x):
-        w+=[3]
-        w+=[2]
-        return w
+    def algo(a, x):
+        a+=[3]
+        a+=[2]
+        return a
 
     algo1 = algo(a, 3)
-    print (algo1[0])"""
+    print (algo1)"""
 
