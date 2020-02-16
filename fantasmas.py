@@ -12,7 +12,7 @@ fantasmasimg = []
 fantasmasimgrect = []
 fantasmasimgx=[]
 fantasmasimgy=[]
-cantidadfantasmas=1
+cantidadfantasmas=2
 
 #lugarllave
 filallave=(alto // 50)-1
@@ -21,6 +21,10 @@ columnallave=(ancho // 50)-1
 #lugarpuerta
 filapuerta=(alto // 50) - 1
 columnapuerta=0
+
+#lugar link
+link_f=3
+link_c=3
 
 player = pg.image.load("./imgs/fantasma.png")
 player = pg.transform.scale(player, (50, 50))
@@ -66,6 +70,7 @@ def main():
 
     #link de prueba
     matrizinicial[3][3] = 2
+
     #obstaculos de prueba
     matrizinicial[1][1] = 1
     matrizinicial[3][2] = 1
@@ -101,6 +106,16 @@ def main():
     crearfantasmas=False
 
     hola=""
+    word = "[(0,1)(1,0)(0,4)]"
+    word += "\n"
+    word += "[(2,2)(1,0)(0,4)]"
+    word += "\n"
+    word += "[(1,1)(2,4)(3,5)]"
+
+    word0 = "[(0,1)(1,0)(0,4)]"
+    word0 += "\n"
+    word0 += "[(0,1)]"
+
 
     while runing:
         #crear fantasmas
@@ -109,6 +124,9 @@ def main():
             crearfantasmas=True
 
         print("Vuelta --------------")
+
+        saber()
+
 
 
         #mostrar matriz
@@ -130,22 +148,22 @@ def main():
          #   screen.blit(obstimg[f], obstimgrects[f])
 
         #for f in range(0, 2):
-        #    screen.blit(obstimg[f], obstimgrects[f])
+         #   screen.blit(obstimg[f], obstimgrects[f])
+
 
         screen.blit(obstimg[0], (50, 50))
         screen.blit(obstimg[1], (100, 150))
 
-        print(Libres(1,3,matrizinicial,ancho,alto))
 
-        hola+="1"
-        hola+="\n"
+        #Libres(0, 0,"(0,0)", matrizinicial, ancho, alto, "", 3, 3)
 
-        print(hola)
+
 
         #mover fantasmas por profundidad
         #for p in range(0, cantidadfantasmas):
-         #   (fantasmasimgrect[p],matrizinicial)=Profundidadsinciclos(fantasmasimgrect[p],matrizinicial , ancho , alto)
-          #  screen.blit(fantasmasimg[p], fantasmasimgrect[p])
+        #    (fantasmasimgrect[p],matrizinicial)=\
+        #        Profundidadsinciclos(fantasmasimgrect[p], matrizinicial, ancho , alto, "arbol", link_f,link_c)
+        #    screen.blit(fantasmasimg[p], fantasmasimgrect[p])
 
 
         #mover y pintar fantasmas
@@ -155,7 +173,11 @@ def main():
 
         pg.display.update()
 
-def Libres(posicionf,posicionc,matrixobst, ancho , alto):
+
+
+
+def Libres(posf,posc,hentrante, matrixobst, ancho , alto, arbol, linkf, linkc):
+
     # para escoger una direccion disponible
     (arr, aba, der, izq) = (True, True, True, True)
 
@@ -165,7 +187,15 @@ def Libres(posicionf,posicionc,matrixobst, ancho , alto):
     # opciones de movimiento disponibles
     opciones = []
 
-    libres =""
+    libres = arbol
+
+    #chao = "[(1,2)]"
+    #print(chao[1:2])
+    #print(chao[3:4])
+
+    posicionf = int(hentrante[1:2])
+    posicionc = int(hentrante[3:4])
+
 
     # Miro si esta en un limite del mapa
     # Esta arriba Max, no se puede mover hacia arriba
@@ -222,36 +252,232 @@ def Libres(posicionf,posicionc,matrixobst, ancho , alto):
             aba = True
 
 
-    if matrixobst[posicionf+1][posicionc] == 1 :
-        libres= posicionf , posicionc+1
+    #arbol de forma matricial
+    arbolmatrix=""
 
-    # Agrego opciones de movimientos al array
-    if der == True:
-        opciones.append(1)
-    if aba == True:
-        opciones.append(2)
-    if izq == True:
-        opciones.append(3)
-    if arr == True:
-        opciones.append(4)
+    #ultimos hijos
+    ultimoshijos=""
 
-    return opciones.__len__()
+    #numero de hermanos del ultimo
+    numultimoshijos=0
 
-def Profundidadsinciclos(fantasma, matrixobst, ancho , alto):
-    #reglas: derecha,arriba,izquierda,abajo
+    #hijo a expandir
+    hijo = ""
+
+    #posicion donde estoy
+    posicionactual = arbolmatrix.__len__()-1
+
+    #raiz y meta
+    raiz = "(" + str(posf) + ","+ str(posc) + ")"
+    meta = "(" + str(linkf) + ","+ str(linkc) + ")"
+
+    # hijo entrante , valor entrante
+    hijoentrante = hentrante
+
+    #variables boleanas
+    soyancestro = False
+    soyraiz = False
+    soymeta = False
+
+    #para agregar hijos a la lista, expandir
+    expandir= False
+
+    #arbol en forma de lista para enviar nuevamente a este metodo
+    arbolenviar=""
+
+
+#####capturo valores para trabajar
+    if arbol != "" :
+        arbolmatrix = arbol.splitlines()
+        ultimoshijos = (arbolmatrix[arbolmatrix.__len__()-1])
+        hijo = ultimoshijos[1:6]
+        numultimoshijos = ultimoshijos.__len__()
+
+
+
+#####validar si es ancestro
+    if arbol != "" :
+        for x in range(0, arbolmatrix.__len__()-1):
+            filahijos = (arbolmatrix[x])
+            onehijo = filahijos[1:6]
+            if hijoentrante == onehijo:
+                soyancestro = True
+
+
+
+
+##### validar si la opción que llega es meta
+    if hijoentrante == meta:
+        filahijos = (arbolmatrix[1])
+        onehijo = filahijos[1:6]
+        soymeta = True
+        print("llegamos a la meta, devuelve el primer valor del primer hijo de la raiz , que es:   " + onehijo)
+        print("la mejor opcion es : " + onehijo)
+        return onehijo
+
+##### Validar si es Raiz
+    elif arbol == "" :
+        arbolenviar = "[" + hijoentrante + "]\n"
+        expandir = True
+        soyraiz = True
+
+        print("Soy la Raiz, me pongo, pongo mis hijos y mando mi primer hijo para repetir este metodo y seguir creando el arbol ")
+
+
+    #validar si ya estoy de ancestro.
+    elif soyancestro == True:
+        print("YA ESTA REPETIDO , me quito de la lista y envio la lista y a mi hermano.")
+        #me quito
+        sinquitar =  ultimoshijos[ultimoshijos.__len__() - 1]
+        ultimoshijos = ultimoshijos[6:ultimoshijos.__len__() - 1]
+
+        #si es hijo unico
+        if numultimoshijos == 7 :
+            #twohijo = "Devolverse al nivel anterior, enviar primer hijo, y enviar el arbol hasta ese nivel "
+            hijosanteriores = (arbolmatrix[arbolmatrix.__len__() - 2])
+            twohijo = hijosanteriores[1:6]
+
+            arbolenviar = MatrizaLista(arbolmatrix, False)
+
+            print("todos : ")
+            print(arbol)
+            print("  sin el repetido : ")
+            print(arbolenviar)
+            print(" El siguiente a enviar es : " + twohijo)
+
+            return Libres(posf,posc,twohijo,matrixobst,ancho,alto,arbolenviar,linkf,linkc)
+
+            # return  Libres(posicionf,posicionc,twohijo,matrixobst,ancho,alto,arbol,linkf,linkc)
+
+        #si tengo mas hermanos
+        elif numultimoshijos > 7 :
+            libres = "[" + ultimoshijos + "]"
+            arbolmatrix[arbolmatrix.__len__() - 1] = libres
+            twohijo = libres[1:6]
+
+            arbolenviar = MatrizaLista(arbolmatrix, True)
+
+            print("todos : ")
+            print(arbol)
+            print("  sin el repetido : ")
+            print(arbolenviar)
+            print(" El hermano siguiente es : " + twohijo)
+
+            return Libres(posf, posc, twohijo, matrixobst, ancho, alto, arbolenviar, linkf, linkc)
+            # return  Libres(posicionf,posicionc,twohijo,matrixobst,ancho,alto,arbol,linkf,linkc)
+
+
+
+
+
+    ######
+
+
+    if soyraiz == True or (soymeta == False and soyancestro == False and soyraiz == False):
+
+        if soyraiz == True:
+
+            print("ENTRAMOOOS")
+
+
+            libres += "["
+            # Agrego opciones de movimientos al array y a libres
+            if arr == True:
+                opciones.append(4)
+                libres += "(" + str(posicionf - 1) + "," + str(posicionc) + ")"
+
+            if der == True:
+                opciones.append(1)
+                libres += "(" + str(posicionf) + "," + str(posicionc + 1) + ")"
+
+            if aba == True:
+                opciones.append(2)
+                libres += "(" + str(posicionf + 1) + "," + str(posicionc) + ")"
+
+            if izq == True:
+                opciones.append(3)
+                libres += "(" + str(posicionf) + "," + str(posicionc - 1) + ")"
+
+            libres += "]"
+
+            arbolenviar += libres
+            onehijo = libres[1:6]
+
+            print("agregar hijos de la raiz y enviar el primer hijo")
+            print("arbol que se genero es : ")
+            print(arbolenviar)
+            print(" primer hijo es : ")
+            print( onehijo)
+
+            return Libres(posf, posc, onehijo, matrixobst, ancho, alto, arbolenviar, linkf, linkc)
+
+        elif (soymeta == False and soyancestro == False and soyraiz == False):
+            print("Agregar hijos del que llego al final del arbol, y enviar al primer hijo de esta ultima rama")
+
+            libres = "["
+            # Agrego opciones de movimientos al array y a libres
+            if arr == True:
+                opciones.append(4)
+                libres += "(" + str(posicionf - 1) + "," + str(posicionc) + ")"
+
+            if der == True:
+                opciones.append(1)
+                libres += "(" + str(posicionf) + "," + str(posicionc + 1) + ")"
+
+            if aba == True:
+                opciones.append(2)
+                libres += "(" + str(posicionf + 1) + "," + str(posicionc) + ")"
+
+            if izq == True:
+                opciones.append(3)
+                libres += "(" + str(posicionf) + "," + str(posicionc - 1) + ")"
+
+            libres += "]"
+
+
+
+            arbolenviar = MatrizaLista(arbolmatrix, True)
+            arbolenviar += "\n"
+            arbolenviar += libres
+            onehijo = libres[1:6]
+
+            print("agregar hijos del que llego:")
+            print("arbol que se genero es : ")
+            print(arbolenviar)
+            print(" primer hijo de la ultima rama ees : ")
+            print(onehijo)
+
+            return Libres(posf, posc, onehijo, matrixobst, ancho, alto, arbolenviar, linkf, linkc)
+
+
+
+
+
+def MatrizaLista(array, cuantos):
+    lista = ""
+    todos = cuantos
+
+    if todos == True:
+        for x in range(0, array.__len__()):
+            if x == (array.__len__()-1):
+                lista += array[x]
+            else:
+                lista += array[x] + "\n"
+    elif todos == False:
+        for x in range(0, array.__len__()-1):
+            if x == (array.__len__()-2):
+                lista += array[x]
+            else:
+                lista += array[x] + "\n"
+
+
+
+    return lista
+
+def Profundidadsinciclos(fantasma, matrixobst, ancho , alto, arbol, linkf,linkc):
+    #reglas: arriba, derecha, abajo ,izquierda
 
     global filallave, columnallave, filapuerta, columnapuerta
-    # capturar si paso por llave o puerta
-    (hayllave, haypuerta) = (False, False)
-
-    # opciones de movimiento disponibles
-    opciones = []
-
-    # para escoger una direccion disponible
-    (arr, aba, der, izq) = (True, True, True, True)
-
-    # para mirar si esta en un borde del mapa
-    (bordearr, bordeaba, bordeder, bordeizq) = (False, False, False, False)
 
     # Capturo posicion fantasma
     posicionc = fantasma.left // 50
@@ -260,92 +486,41 @@ def Profundidadsinciclos(fantasma, matrixobst, ancho , alto):
     posicioncvieja = posicionc
     posicionfvieja = posicionf
 
-    # si paso por llave
-    # if matrixobst[posicionf][posicionc]==4:
-    #   print("paso por la llave")
-    #  pg.quit()
 
-    # Miro si esta en un limite del mapa
-    # Esta arriba Max, no se puede mover hacia arriba
-    if posicionf == 0:
-        # print("Esta Arriba")
-        arr = False
-        bordearr = True
+    #hijo a enviar, posicion actual, raiz
+    onehijo = "(" + str(posicionf) + ","+ str(posicionc) + ")"
 
-    # Esta abajo Max, no se puede mover hacia abajo
-    if posicionf == (alto // 50) - 1:
-        # print("Esta Abajo")
-        aba = False
-        bordeaba = True
+    opcion = Libres(posicionf, posicionc, onehijo, matrixobst, ancho, alto, "", linkf, linkc)
+    valorescogido = 0
 
-    # Esta izquierda Max, no se puede mover hacia la izquierda
-    if posicionc == 0:
-        # print("Esta a la Izquierda")
-        izq = False
-        bordeizq = True
+    #valido la posicion que llego para saber hacia que lado se mueve el fantasma
+    #miro si es arriba
+    if opcion == "(" + str(posicionf-1) + ","+ str(posicionc) + ")" :
+        valorescogido = 1
+    elif opcion == "(" + str(posicionf) + ","+ str(posicionc+1) + ")" :
+        valorescogido = 2
+    elif opcion == "(" + str(posicionf+1) + ","+ str(posicionc) + ")" :
+        valorescogido = 3
+    elif opcion == "(" + str(posicionf) + ","+ str(posicionc-1) + ")" :
+        valorescogido = 4
 
-    # Esta Derecha Max, no se puede mover hacia la derecha
-    if posicionc == (ancho // 50) - 1:
-        # print("Esta a la Derecha")
-        der = False
-        bordeder = True
 
-    # Miro si tiene obstaculos al rededor
-    # a la izquierda
-    if bordeizq == False:
-        if matrixobst[posicionf][posicionc - 1] == 1:
-            izq = False
-        else:
-            izq: True
-
-    # a la derecha
-    if bordeder == False:
-        if matrixobst[posicionf][posicionc + 1] == 1:
-            der = False
-        else:
-            der = True
-
-    # arriba
-    if bordearr == False:
-        if matrixobst[posicionf - 1][posicionc] == 1:
-            arr = False
-        else:
-            arr = True
-
-    # abajo
-    if bordeaba == False:
-        if matrixobst[posicionf + 1][posicionc] == 1:
-            aba = False
-        else:
-            aba = True
-
-    # Agrego opciones de movimientos al array
-    if der == True:
-        opciones.append(1)
-    if aba == True:
-        opciones.append(2)
-    if izq == True:
-        opciones.append(3)
-    if arr == True:
-        opciones.append(4)
-
-    valor = random.randint(0, opciones.__len__() - 1)
-    elegido = opciones[valor]
-    # print(opciones)
+    #opcion que llega de Libres
+    elegido = valorescogido
 
     # movimiento despues de elegir el lado a donde se va a mover
+        # mover arriba
+    if elegido == 1 and fantasma.top >= 50:
+        fantasma.top += -50
     # mover derecha
-    if elegido == 1 and fantasma.left <= ancho - 100:
+    if elegido == 2 and fantasma.left <= ancho - 100:
         fantasma.left += 50
         # mover abajo
-    if elegido == 2 and fantasma.top <= alto - 100:
+    if elegido == 3 and fantasma.top <= alto - 100:
         fantasma.top += 50
         # mover izquierda
-    if elegido == 3 and fantasma.left >= 50:
+    if elegido == 4 and fantasma.left >= 50:
         fantasma.left += -50
-        # mover arriba
-    if elegido == 4 and fantasma.top >= 50:
-        fantasma.top += -50
 
     # capturo posiciones nuevas
     posicioncnueva = fantasma.left // 50
@@ -379,7 +554,6 @@ def Profundidadsinciclos(fantasma, matrixobst, ancho , alto):
     else:
         matrixobst[posicionfnueva][posicioncnueva] = 3
 
-
     return fantasma, matrixobst
 
 
@@ -395,9 +569,9 @@ def CrearFantasmas(screen, a):
         newfantas = pg.image.load("./imgs/fantasma.png")
         newfantas = pg.transform.scale(player, (50, 50))
         fantasmasimg.append(newfantas)
-        #(fantasmasimgy[f], fantasmasimgx[f]) = Buscar(a, ancho, alto)
-        (fantasmasimgy[f], fantasmasimgx[f])=(0,0)
-        screen.blit(fantasmasimg[f], (fantasmasimgx[f], fantasmasimgy[f]))
+        (fantasmasimgy[f], fantasmasimgx[f]) = Buscar(a, ancho, alto)
+        #(fantasmasimgy[f], fantasmasimgx[f])=(0,0)
+        #screen.blit(fantasmasimg[f], (fantasmasimgx[f], fantasmasimgy[f]))
         rect = fantasmasimg[f].get_rect()
         fantasmasimgrect.append(rect)
         rect.left = fantasmasimgx[f]
