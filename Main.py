@@ -219,7 +219,7 @@ def main(dimension, aleatorio, matrizPersonalizada, anchoPersonalizado, altoPers
 
 
         crearTablero = True
-        moverenemigos= True
+        #moverenemigos= True
         pygame.time.delay(500)
         pygame.display.update()
 
