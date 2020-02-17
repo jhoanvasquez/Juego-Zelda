@@ -34,11 +34,9 @@ fantasmasimg = []
 fantasmasimgrect = []
 fantasmasimgx=[]
 fantasmasimgy=[]
-<<<<<<< HEAD
+
 cantidadfantasmas=3
-=======
-#global cantidadfantasmas
->>>>>>> 7ad145dbc0cebfb67b0effc4d0b6266b6aaee94d
+
 player = pygame.image.load("./imgs/fantasma.png")
 player = pygame.transform.scale(player, (50, 50))
 
@@ -114,14 +112,10 @@ def main(dimension, aleatorio, matrizPersonalizada, anchoPersonalizado, altoPers
     crearfantasmas = False
     moverenemigos = True
     valorAnterior = 0
-<<<<<<< HEAD
+
     busqueda1 = True
     global screenshot,fantasmasimgrect,fantasmasimg,cantidadfantasmas
-=======
-    global cantidadfantasmas
-    cantidadfantasmas=5
-    global screenshot
->>>>>>> 7ad145dbc0cebfb67b0effc4d0b6266b6aaee94d
+
 
     while running:
 
@@ -216,7 +210,7 @@ def main(dimension, aleatorio, matrizPersonalizada, anchoPersonalizado, altoPers
         #Llamado a algorimto de busqueda Link
         global mov
 
-<<<<<<< HEAD
+
 
         asterisco = Asterisco(matrizCopia, link_x, link_y, meta_x, meta_y)
 
@@ -224,9 +218,7 @@ def main(dimension, aleatorio, matrizPersonalizada, anchoPersonalizado, altoPers
         print (link_y)
         asterisco = Asterisco(matrizGasto, link_x, link_y, meta_x, meta_y)
 
-=======
-        asterisco = Asterisco(matrizGasto, link_x, link_y, meta_x, meta_y)
->>>>>>> 7ad145dbc0cebfb67b0effc4d0b6266b6aaee94d
+
         mov = asterisco.mov
 
         #Evento para cierre de ventana
@@ -251,13 +243,11 @@ def main(dimension, aleatorio, matrizPersonalizada, anchoPersonalizado, altoPers
             screen.blit(link, (link_x * 50, link_y * 50))
 
 
-<<<<<<< HEAD
             # mover y pintar fantasmas
             #print(matrizTablero)
         print(matrizTablero)
         #print("cantidad fantasmas es : "+ str(cantidadfantasmas))
-=======
->>>>>>> 7ad145dbc0cebfb67b0effc4d0b6266b6aaee94d
+
         if moverenemigos == True:
             for p in range(0, cantidadfantasmas):
                 (fantasmasimgrect[p], a) = \
@@ -456,36 +446,9 @@ def tableroPersonalizado(matriz, screen, suelo, obstaculo ,llave, puerta, link, 
     return link_x, link_y, llave_x, llave_y, puerta_x, puerta_y,\
            fantasmasimgx, fantasmasimgy,fantasmasimgrect,cantidadfantasmas,fantasmasimg
 
-#para fantasmas
-<<<<<<< HEAD
-#crear fantasmas perzonalizados
-def CrearFantasmasPersonalizados(screen, a, ancho,alto):
-
-    # agregar 0s a arrays de posiciones de fantasmas
-    fantasmasimgx = numpy.zeros((cantidadfantasmas), dtype=int)
-    fantasmasimgy = numpy.zeros((cantidadfantasmas), dtype=int)
-
-    # crear fantasmas
-    for f in range(0, cantidadfantasmas):
-        newfantas = pygame.image.load("./imgs/fantasma.png")
-        newfantas = pygame.transform.scale(player, (50, 50))
-        fantasmasimg.append(newfantas)
-        (fantasmasimgy[f], fantasmasimgx[f]) = Buscar(a, ancho, alto)
-        #screen.blit(fantasmasimg[f], (fantasmasimgx[f], fantasmasimgy[f]))
-        rect = fantasmasimg[f].get_rect()
-        fantasmasimgrect.append(rect)
-        rect.left = fantasmasimgx[f]
-        rect.top = fantasmasimgy[f]
-        a[fantasmasimgy[f] // 50][fantasmasimgx[f] // 50] = 3
-
-
-
-#Crear fantasmas aleatorios
-def CrearFantasmas(screen, a, ancho,alto):
-=======
 #Crear fantasmas
 def CrearFantasmas(screen, a, ancho,alto,cantidadfantasmas):
->>>>>>> 7ad145dbc0cebfb67b0effc4d0b6266b6aaee94d
+
 
     # agregar 0s a arrays de posiciones de fantasmas
     fantasmasimgx = numpy.zeros((cantidadfantasmas), dtype=int)
@@ -702,17 +665,11 @@ def Libres(posf,posc,hentrante, matrixobst, ancho , alto, arbol, linkf, linkc):
                 # selecciono el hijo a enviar
                 onehijo = filahijos[1:8]
 
-<<<<<<< HEAD
             soymeta = True
             print("llegamos a la meta, devuelve el primer valor del primer hijo de la raiz , que es:   " + onehijo)
             print("la mejor opcion es : " + onehijo)
             return onehijo
-=======
-        soymeta = True
-        #print("llegamos a la meta, devuelve el primer valor del primer hijo de la raiz , que es:   " + onehijo)
-        #print("la mejor opcion es : " + onehijo)
-        return onehijo
->>>>>>> 7ad145dbc0cebfb67b0effc4d0b6266b6aaee94d
+
 
 ##### Validar si es Raiz
     elif arbol == "" :
@@ -1563,29 +1520,3 @@ if __name__ == '__main__':
 
     gui = GUI()
     #main("600 x 400", True, [], 0, 0)
-<<<<<<< HEAD
-
-=======
-=======
-    #gui = GUI()
-    main("600 x 400", True, [], 0, 0)
-<<<<<<< HEAD
-    #print(1200//50)
-=======
-<<<<<<< HEAD
-    """a =[]
-=======
->>>>>>> 6dc6b5e32cd1216792f3bd32928a37c504500a87
-    """a =[10]
->>>>>>> 5442fd2e1aa7e64308912f396ac9cc5280e7191f
-    
-    def algo(a, x):
-        a+=[3]
-        a+=[2]
-        return a
-
-    algo1 = algo(a, 3)
-    print (algo1)"""
->>>>>>> 7ad145dbc0cebfb67b0effc4d0b6266b6aaee94d
-
->>>>>>> 4d8f5d9370f267746484b0c81d9c3fce9a061f17
