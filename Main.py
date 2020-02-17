@@ -18,6 +18,7 @@ y=50
 
 
 #matriz tablero
+global matrizTablero
 matrizTablero=[]
 
 
@@ -27,13 +28,13 @@ sueloimg = []
 # cargar img obtaculo
 obsimg = []
 
-global fantasmasimgx, fantasmasimgy
+global fantasmasimgx, fantasmasimgy, fantasmasimgrect, fantasmasimg
 #fantasmas
 fantasmasimg = []
 fantasmasimgrect = []
 fantasmasimgx=[]
 fantasmasimgy=[]
-cantidadfantasmas=5
+#global cantidadfantasmas
 player = pygame.image.load("./imgs/fantasma.png")
 player = pygame.transform.scale(player, (50, 50))
 
@@ -109,7 +110,8 @@ def main(dimension, aleatorio, matrizPersonalizada, anchoPersonalizado, altoPers
     crearfantasmas = False
     moverenemigos = True
     valorAnterior = 0
-    busqueda1 = True
+    global cantidadfantasmas
+    cantidadfantasmas=5
     global screenshot
 
     while running:
@@ -121,11 +123,18 @@ def main(dimension, aleatorio, matrizPersonalizada, anchoPersonalizado, altoPers
             if aleatorio == True:
                 matrizTablero = tablero(screen, ancho, alto)
 
+
+                #Asignacion posicion puerta
+
+                posPuerta = asignacion(matrizTablero, puerta_x, 0)
+                puerta_x = posPuerta[0]
+                puerta_y = 0
+
                 #Asignacion posicion llave y puerta
                 posLlave = asignacion(matrizTablero, llave_x, llave_y)
                 llave_x = posLlave[0]
                 llave_y = posLlave[1]
-                matrizTablero[llave_y][llave_x] = 4
+
                 screen.blit(llave, ((llave_x*50)+5, (llave_y*50)+5))
                 screen.blit(puerta, (puerta_x-25 , puerta_y-9))
 
@@ -136,6 +145,7 @@ def main(dimension, aleatorio, matrizPersonalizada, anchoPersonalizado, altoPers
                 llave_y = posLink[1]
 
 
+
                 #Tomar fondo del juego
                 screenshot = screen.copy()
                 screen.blit(screenshot, (0, 0))
@@ -143,7 +153,7 @@ def main(dimension, aleatorio, matrizPersonalizada, anchoPersonalizado, altoPers
 
                 screen.blit(link, (link_x * 50, link_y * 50))
                 matrizTablero[link_y][link_x] = 2
-
+                matrizTablero[llave_y][llave_x] = 4
 
                 #Asignacion posici
                 # on puerta
@@ -154,7 +164,7 @@ def main(dimension, aleatorio, matrizPersonalizada, anchoPersonalizado, altoPers
                 matrizGasto = numpy.zeros((len(matrizTablero),len(matrizTablero[0])))
 
                 #Creacion de fantasmas
-                CrearFantasmas(screenshot, matrizTablero, ancho,alto)
+                CrearFantasmas(screenshot, matrizTablero, ancho,alto, cantidadfantasmas)
 
 
 
@@ -189,13 +199,7 @@ def main(dimension, aleatorio, matrizPersonalizada, anchoPersonalizado, altoPers
         #Llamado a algorimto de busqueda Link
         global mov
 
-<<<<<<< HEAD
-        asterisco = Asterisco(matrizCopia, link_x, link_y, meta_x, meta_y)
-=======
-        print (link_x)
-        print (link_y)
         asterisco = Asterisco(matrizGasto, link_x, link_y, meta_x, meta_y)
->>>>>>> 5442fd2e1aa7e64308912f396ac9cc5280e7191f
         mov = asterisco.mov
 
         #Evento para cierre de ventana
@@ -220,15 +224,13 @@ def main(dimension, aleatorio, matrizPersonalizada, anchoPersonalizado, altoPers
             screen.blit(link, (link_x * 50, link_y * 50))
 
 
-            # mover y pintar fantasmas
-            print(matrizTablero)
-
         if moverenemigos == True:
             for p in range(0, cantidadfantasmas):
                 (fantasmasimgrect[p], a) = \
                     Profundidadsinciclos(fantasmasimgrect[p], matrizTablero, ancho, alto, link_y, link_x, llave_y,
                                          llave_x,puerta_y, puerta_x)
                 screen.blit(fantasmasimg[p], fantasmasimgrect[p])
+
 
 
         crearTablero = True
@@ -258,6 +260,15 @@ def tablero (screen, ancho, alto):
             screen.blit(obsimg[z], (posicionX, posicionY))
     return matrizObstaculos
 
+def matarFantasma(matriz, link_x, link_y, fantasmasimgrect, cantidadfantasmas):
+    if matrizTablero[link_y//50][link_x//50] == 3 and cantidadfantasmas > 1:
+        for i in range (0, cantidadfantasmas-1):
+            if link_x//50 == fantasmasimgrect[i][0]//50 and link_y//50 == fantasmasimgrect[i][1]//50:
+                fantasmasimgrect.remove(fantasmasimgrect[i])
+                fantasmasimg.remove(fantasmasimg[i])
+
+        cantidadfantasmas -= 1
+
 #Movimientos de link
 def moverLink(movimiento, link_x, link_y, matrizTablero, matrizGasto, valorAnterior):
         link_x *= 50
@@ -267,6 +278,7 @@ def moverLink(movimiento, link_x, link_y, matrizTablero, matrizGasto, valorAnter
             if link_x >= 50:
                 matrizTablero[math.ceil(link_y/50)][math.ceil(link_x/50)] = valorAnterior
                 valorAnterior = matrizTablero[math.ceil(link_y/50)][math.ceil(link_x/50)-1]
+                matarFantasma(matrizTablero, link_x-50, link_y,fantasmasimgrect, cantidadfantasmas)
                 link_x -= 50
                 matrizTablero[math.ceil(link_y/50)][math.ceil(link_x/50)] = 2
                 matrizGasto[math.ceil(link_y/50)][math.ceil(link_x/50)+1] +=1
@@ -275,6 +287,7 @@ def moverLink(movimiento, link_x, link_y, matrizTablero, matrizGasto, valorAnter
             if link_x <= ancho-100:
                 matrizTablero[math.ceil(link_y/50)][math.ceil(link_x/50)] = valorAnterior
                 valorAnterior = matrizTablero[math.ceil(link_y/50)][math.ceil(link_x/50)+1]
+                matarFantasma(matrizTablero, link_x + 50, link_y,fantasmasimgrect, cantidadfantasmas)
                 link_x += 50
                 matrizGasto[math.ceil(link_y/50)][math.ceil(link_x/50)-1]+=1
                 matrizTablero[math.ceil(link_y/50)][math.ceil(link_x/50)] = 2
@@ -284,6 +297,7 @@ def moverLink(movimiento, link_x, link_y, matrizTablero, matrizGasto, valorAnter
             if link_y >= 50:
                 matrizTablero[math.ceil(link_y/50)][math.ceil(link_x/50)] = valorAnterior
                 valorAnterior = matrizTablero[math.ceil(link_y/50)-1][math.ceil(link_x/50)]
+                matarFantasma(matrizTablero, link_x,link_y-50,fantasmasimgrect, cantidadfantasmas)
                 link_y -= 50
                 matrizGasto[math.ceil(link_y/50)+1][math.ceil(link_x/50)] += 1
                 matrizTablero[math.ceil(link_y/50)][math.ceil(link_x/50)] = 2
@@ -293,10 +307,12 @@ def moverLink(movimiento, link_x, link_y, matrizTablero, matrizGasto, valorAnter
             if link_y <= alto-100:
                 matrizTablero[math.ceil(link_y/50)][math.ceil(link_x/50)] = valorAnterior
                 valorAnterior = matrizTablero[math.ceil(link_y/50)+1][math.ceil(link_x/50)]
+                matarFantasma(matrizTablero, link_x ,link_y+50 ,fantasmasimgrect, cantidadfantasmas)
                 link_y += 50
                 matrizGasto[math.ceil(link_y/50)-1][math.ceil(link_x/50)] += 1
                 matrizTablero[math.ceil(link_y/50)][math.ceil(link_x/50)] = 2
 
+        #print(matrizTablero)
         return math.ceil(link_x/50), math.ceil(link_y/50), matrizTablero, matrizGasto, valorAnterior
 
 def asignacion(matriz, posX, posY):
@@ -321,24 +337,26 @@ def asignacion(matriz, posX, posY):
     if obstaculo < 3:
         return posX, posY
     else:
-        for x in range(1, len(matriz)-1):
-         for z in range(1, len(matriz[0])-1):
-             if matriz [x-1][z] != 1:
-                 obstaculo -= 1
+        for x in range(0, len(matriz)):
+         for z in range(0, len(matriz[0])):
+             if matriz[x][z] == 0:
+                 if matriz [x-1][z] != 1:
+                     obstaculo -= 1
 
-             if matriz [x+1][z] == 1:
-                obstaculo -= 1
+                 if matriz [x+1][z] != 1:
+                    obstaculo -= 1
 
-             if matriz [x][z-1] == 1:
-                obstaculo -= 1
+                 if matriz [x][z-1] != 1:
+                    obstaculo -= 1
 
-             if matriz [x][z+1] == 1:
-                obstaculo -= 1
+                 if matriz [x][z+1] != 1:
+                    obstaculo -= 1
 
-             posX = z
-             posY = x
-             return  posX, posY
-             break
+                 if obstaculo < 2:
+                     posX = z
+                     posY = x
+                     return  posX, posY
+                     break
 
 
 
@@ -386,7 +404,7 @@ def tableroPersonalizado(matriz, screen, suelo, obstaculo ,llave, puerta, link, 
 
 #para fantasmas
 #Crear fantasmas
-def CrearFantasmas(screen, a, ancho,alto):
+def CrearFantasmas(screen, a, ancho,alto,cantidadfantasmas):
 
     # agregar 0s a arrays de posiciones de fantasmas
     fantasmasimgx = numpy.zeros((cantidadfantasmas), dtype=int)
@@ -425,7 +443,7 @@ def Libres(posf,posc,hentrante, matrixobst, ancho , alto, arbol, linkf, linkc):
     #para obtener posicion en fila y columna del hijo entrante
     #forma [(1,2)]
     if hentrante.__len__() == 5:
-        print("forma [(1,2)]")
+        #print("forma [(1,2)]")
         posicionf = int(hentrante[1:2])
         posicionc = int(hentrante[3:4])
 
@@ -433,17 +451,17 @@ def Libres(posf,posc,hentrante, matrixobst, ancho , alto, arbol, linkf, linkc):
     elif hentrante.__len__() == 6:
         # forma [(1,23)]
         if hentrante[2] == ",":
-            print("forma [(1,23)]")
+            #print("forma [(1,23)]")
             posicionf = int(hentrante[1:2])
             posicionc = int(hentrante[3:5])
         # forma [(12,3)]
         elif hentrante[3] == ",":
-            print("forma [(12,3)]")
+            #print("forma [(12,3)]")
             posicionf = int(hentrante[1:3])
             posicionc = int(hentrante[4:5])
 
     elif hentrante.__len__() == 7:
-        print("forma [(12,34)]")
+        #print("forma [(12,34)]")
         posicionf = int(hentrante[1:3])
         posicionc = int(hentrante[4:6])
 
@@ -598,8 +616,8 @@ def Libres(posf,posc,hentrante, matrixobst, ancho , alto, arbol, linkf, linkc):
             onehijo = filahijos[1:8]
 
         soymeta = True
-        print("llegamos a la meta, devuelve el primer valor del primer hijo de la raiz , que es:   " + onehijo)
-        print("la mejor opcion es : " + onehijo)
+        #print("llegamos a la meta, devuelve el primer valor del primer hijo de la raiz , que es:   " + onehijo)
+        #print("la mejor opcion es : " + onehijo)
         return onehijo
 
 ##### Validar si es Raiz
@@ -608,12 +626,12 @@ def Libres(posf,posc,hentrante, matrixobst, ancho , alto, arbol, linkf, linkc):
         expandir = True
         soyraiz = True
 
-        print("Soy la Raiz, me pongo, pongo mis hijos y mando mi primer hijo para repetir este metodo y seguir creando el arbol ")
+        #print("Soy la Raiz, me pongo, pongo mis hijos y mando mi primer hijo para repetir este metodo y seguir creando el arbol ")
 
 
     #validar si ya estoy de ancestro.
     elif soyancestro == True:
-        print("YA ESTA REPETIDO , me quito de la lista y envio la lista y a mi hermano.")
+        #print("YA ESTA REPETIDO , me quito de la lista y envio la lista y a mi hermano.")
         #me quito
         sinquitar =  ultimoshijos[ultimoshijos.__len__() - 1]
         ultimoshijos = ultimoshijos[6:ultimoshijos.__len__() - 1]
@@ -661,8 +679,8 @@ def Libres(posf,posc,hentrante, matrixobst, ancho , alto, arbol, linkf, linkc):
                 onehijo = filahijos[1:8]
 
             soymeta = True
-            print("llegamos a la meta, devuelve el primer valor del primer hijo de la raiz , que es:   " + onehijo)
-            print("la mejor opcion es : " + onehijo)
+            #print("llegamos a la meta, devuelve el primer valor del primer hijo de la raiz , que es:   " + onehijo)
+            #print("la mejor opcion es : " + onehijo)
             return onehijo
 
 
@@ -766,11 +784,11 @@ def Libres(posf,posc,hentrante, matrixobst, ancho , alto, arbol, linkf, linkc):
             for x in range(contador-1):
                 arbolenviar = MatrizaLista(arbolmatrix,False)
 
-            print("todos : ")
+            """print("todos : ")
             print(arbol)
             print("  sin el repetido : ")
             print(arbolenviar)
-            print(" El siguiente a enviar es : " + twohijo)
+            print(" El siguiente a enviar es : " + twohijo)"""
 
             return Libres(posf,posc,twohijo,matrixobst,ancho,alto,arbolenviar,linkf,linkc)
 
@@ -858,11 +876,11 @@ def Libres(posf,posc,hentrante, matrixobst, ancho , alto, arbol, linkf, linkc):
             arbolmatrix[arbolmatrix.__len__() - 2] = libres
             arbolenviar = MatrizaLista(arbolmatrix, False)
 
-            print("todos : ")
+            """print("todos : ")
             print(arbol)
             print("  sin el repetido : ")
             print(arbolenviar)
-            print(" El siguiente a enviar es : " + twohijo)
+            print(" El siguiente a enviar es : " + twohijo)"""
 
             return Libres(posf,posc,twohijo,matrixobst,ancho,alto,arbolenviar,linkf,linkc)
 
@@ -922,11 +940,11 @@ def Libres(posf,posc,hentrante, matrixobst, ancho , alto, arbol, linkf, linkc):
             arbolmatrix[arbolmatrix.__len__() - 1] = libres
             arbolenviar = MatrizaLista(arbolmatrix, True)
 
-            print("todos : ")
+            """print("todos : ")
             print(arbol)
             print("  sin el repetido : ")
             print(arbolenviar)
-            print(" El hermano siguiente es : " + twohijo)
+            print(" El hermano siguiente es : " + twohijo)"""
 
             return Libres(posf, posc, twohijo, matrixobst, ancho, alto, arbolenviar, linkf, linkc)
 
@@ -935,7 +953,7 @@ def Libres(posf,posc,hentrante, matrixobst, ancho , alto, arbol, linkf, linkc):
 
         if soyraiz == True:
 
-            print("ENTRAMOOOS")
+            #print("ENTRAMOOOS")
 
 
             libres += "["
@@ -978,16 +996,16 @@ def Libres(posf,posc,hentrante, matrixobst, ancho , alto, arbol, linkf, linkc):
 
 
 
-            print("agregar hijos de la raiz y enviar el primer hijo")
+            """print("agregar hijos de la raiz y enviar el primer hijo")
             print("arbol que se genero es : ")
             print(arbolenviar)
             print(" primer hijo es : ")
-            print( onehijo)
+            print( onehijo)"""
 
             return Libres(posf, posc, onehijo, matrixobst, ancho, alto, arbolenviar, linkf, linkc)
 
         elif (soymeta == False and soyancestro == False and soyraiz == False):
-            print("Agregar hijos del que llego al final del arbol, y enviar al primer hijo de esta ultima rama")
+            #print("Agregar hijos del que llego al final del arbol, y enviar al primer hijo de esta ultima rama")
 
             libres = "["
             # Agrego opciones de movimientos al array y a libres
@@ -1031,11 +1049,11 @@ def Libres(posf,posc,hentrante, matrixobst, ancho , alto, arbol, linkf, linkc):
                 # selecciono el hijo a enviar
                 onehijo = libres[1:8]
 
-            print("agregar hijos del que llego:")
+            """print("agregar hijos del que llego:")
             print("arbol que se genero es : ")
             print(arbolenviar)
             print(" primer hijo de la ultima rama ees : ")
-            print(onehijo)
+            print(onehijo)"""
 
             return Libres(posf, posc, onehijo, matrixobst, ancho, alto, arbolenviar, linkf, linkc)
 
@@ -1131,12 +1149,12 @@ def Profundidadsinciclos(fantasma, matrixobst, ancho , alto, linkf,linkc, llavef
     # si me muevo a la llave o a la puerta dejo la matrix como estaba con la llave o puerta
     if matrixobst[posicionfnueva][posicioncnueva] == 4 or matrixobst[posicionfnueva][posicioncnueva] == 5:
         if matrixobst[posicionfnueva][posicioncnueva] == 4:
-            print("pase por la llave")
+            #print("pase por la llave")
             matrixobst[posicionfnueva][posicioncnueva] = 4
             # (filallave,columnallave)=(posicionfnueva,posicioncnueva)
 
         elif matrixobst[posicionfnueva][posicioncnueva] == 5:
-            print("pase por la puerta")
+            #gprint("pase por la puerta")
             matrixobst[posicionfnueva][posicioncnueva] = 5
             (filapuerta, columnapuerta) = (posicionfnueva, posicioncnueva)
     else:
@@ -1154,9 +1172,9 @@ def matrizUpdate(tablero, gastos):
                 gastos[x][i] = 3
              if tablero[x][i] == 1:
                 gastos[x][i] = None
-             """if tablero[x][i] == 0 and gastos[x][i] == 3 and \
+             if tablero[x][i] == 0 and gastos[x][i] == 3 and \
                      (tablero[x-1][i] != 2 or tablero[x+1][i] != 2 or tablero[x][i-1] != 2 or tablero[x][i+1] != 2):
-                gastos[x][i] = 0"""
+                gastos[x][i] = 0
     except :
         pass
     return gastos
@@ -1450,17 +1468,4 @@ def MoverFantasma(fantasma, matrixobst, ancho , alto):
 if __name__ == '__main__':
     #gui = GUI()
     main("600 x 400", True, [], 0, 0)
-<<<<<<< HEAD
-    """a =[]
-=======
-    """a =[10]
->>>>>>> 5442fd2e1aa7e64308912f396ac9cc5280e7191f
-    
-    def algo(a, x):
-        a+=[3]
-        a+=[2]
-        return a
-
-    algo1 = algo(a, 3)
-    print (algo1)"""
-
+    #print(1200//50)
