@@ -234,7 +234,7 @@ def main(dimension, aleatorio, matrizPersonalizada, anchoPersonalizado, altoPers
 
 
         crearTablero = True
-        #moverenemigos= True
+        moverenemigos= True
         pygame.time.delay(500)
         pygame.display.update()
 
@@ -1466,6 +1466,28 @@ def MoverFantasma(fantasma, matrixobst, ancho , alto):
 
 
 if __name__ == '__main__':
+<<<<<<< HEAD
+    gui = GUI()
+    #main("600 x 400", True, [], 0, 0)
+=======
     #gui = GUI()
     main("600 x 400", True, [], 0, 0)
+<<<<<<< HEAD
     #print(1200//50)
+=======
+<<<<<<< HEAD
+    """a =[]
+=======
+>>>>>>> 6dc6b5e32cd1216792f3bd32928a37c504500a87
+    """a =[10]
+>>>>>>> 5442fd2e1aa7e64308912f396ac9cc5280e7191f
+    
+    def algo(a, x):
+        a+=[3]
+        a+=[2]
+        return a
+
+    algo1 = algo(a, 3)
+    print (algo1)"""
+
+>>>>>>> 4d8f5d9370f267746484b0c81d9c3fce9a061f17
